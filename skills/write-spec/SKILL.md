@@ -42,36 +42,37 @@ Follow these steps in order. The subsections below are part of the process, not 
 
 The process produces the spec template sections as it goes:
 
-- Step 2 produces `Baseline`, `Target System`, and early `Decisions`.
-- Step 3 produces `Non-Goals` and `Design And Implementation Constraints`.
+- Step 1 produces `Baseline` and the decision to continue with `write-spec` or route to `meanpowers:shape`.
+- Step 2 produces `Target System`, `Non-Goals`, `Design And Implementation Constraints`, and `Decisions`.
+- Step 3 produces validated target sections.
 - Step 4 produces `Slices`.
 - Step 5 produces `Acceptance Gates`.
 - Step 6 produces `Supporting Verification`.
 - Step 7 produces approval state and handoff.
 
-### 1. Read Input And Run Scope Check
+### 1. Read Input, Understand Baseline, And Check Scope
 
 Read the input change proposal, work item, shaping output, or conversation scope.
 
-Continue with `write-spec` when the work has a clear target and the remaining decisions can be resolved while writing the spec.
+Read the docs, code, commit history, or existing artifacts only enough to understand how the system works and behaves in the vicinity of the requested change.
 
-Route to `meanpowers:shape` when the work is either large or vague or high-uncertainty. If routing to shape, stop and say: `REQUIRED NEXT SKILL: meanpowers:shape`.
+Reframe the requested change against the baseline:
 
-### 2. Define The Target
-
-**Understanding the changes:**
-- Baseline: read the docs, code, commit history to understand how the system works and behave in the vicinity of the required changes.
-- Scope: reframe the required changes with regards to a baseline:
-```
+```text
 CHANGE {i}
 Baseline: {1-2 short sentences}
 Target: {1-2 short sentences}
 Intent: {1 sentence}
 -------
 ```
-- Note: these are the starting point. The best break-down for the expected changes may change during the next phase.
 
-The baseline is the current system behavior, interface, data shape, workflow, or internal structure near the requested change. Start from what the input already tells you and only read enough surrounding context to make the requested change understandable. Revise the baseline later if the target discussion reveals that an important current behavior was missing.
+Start from what the input already tells you. Ask baseline questions only when the current behavior depends on user or product intent that the code cannot reveal.
+
+After understanding the baseline, continue with `write-spec` when the work has a clear target and the remaining decisions can be resolved while writing the spec.
+
+Route to `meanpowers:shape` when the work is either large or vague or high-uncertainty. If routing to shape, stop and say: `REQUIRED NEXT SKILL: meanpowers:shape`.
+
+### 2. Design The Target With The User
 
 **Designing the target:**
 - Interview the user relentlessly about every aspect of this scope until you reach a shared understanding. Walk down each branch of the design tree, resolving dependencies between decisions one-by-one.
@@ -83,7 +84,16 @@ The baseline is the current system behavior, interface, data shape, workflow, or
 
 The target system is broader than user-visible behavior. It may include internal structure, data contracts, migration choices, error handling, observability, compatibility, or constraints that shape implementation.
 
-Capture meaningful target decisions as you make them: selected approach, rejected options, tradeoffs, constraints, and any deviation from shaping decisions. These decisions feed the spec's `Target System`, `Design And Implementation Constraints`, and `Decisions` sections.
+Capture meaningful target decisions as you make them: selected approach, rejected options, tradeoffs, constraints, non-goals, and any deviation from shaping decisions. These decisions feed the spec's `Target System`, `Non-Goals`, `Design And Implementation Constraints`, and `Decisions` sections.
+
+Design principles to use during target design:
+
+- Break the system into smaller units that each have one clear purpose, communicate through well-defined interfaces, and can be understood and tested independently
+- For each unit, you should be able to answer: what does it do, how do you use it, and what does it depend on?
+- Can someone understand what a unit does without reading its internals? Can you change the internals without breaking consumers? If not, the boundaries need work.
+- Smaller, well-bounded units are also easier for you to work with - you reason better about code you can hold in context at once, and your edits are more reliable when files are focused. When a file grows large, that's often a signal that it's doing too much.
+
+### 3. Present The Target For Validation
 
 **Presenting the target:**
 - Once you believe most design decisions have been made, present the design
@@ -92,17 +102,7 @@ Capture meaningful target decisions as you make them: selected approach, rejecte
 - Cover: architecture, components, data flow, error handling, testing
 - Be ready to go back and clarify if something doesn't make sense
 
-**Design for isolation and clarity:**
-- Break the system into smaller units that each have one clear purpose, communicate through well-defined interfaces, and can be understood and tested independently
-- For each unit, you should be able to answer: what does it do, how do you use it, and what does it depend on?
-- Can someone understand what a unit does without reading its internals? Can you change the internals without breaking consumers? If not, the boundaries need work.
-- Smaller, well-bounded units are also easier for you to work with - you reason better about code you can hold in context at once, and your edits are more reliable when files are focused. When a file grows large, that's often a signal that it's doing too much.
-
-### 3. Define Non-Goals And Constraints
-
-Define what the spec explicitly does not change.
-
-Capture design and implementation constraints that emerged while defining the target. These are not a new discovery phase; they are the contract-relevant decisions from Step 2 that implementation must respect.
+Include non-goals and design constraints in the target presentation. Non-goals are what the spec explicitly does not change. Constraints are contract-relevant decisions from Step 2 that implementation must respect.
 
 Examples:
 
