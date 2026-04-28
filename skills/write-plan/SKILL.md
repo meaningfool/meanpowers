@@ -5,51 +5,43 @@ description: Use when creating an implementation plan from an approved Meanpower
 
 # Writing Plans
 
-`write-plan` turns an approved Meanpowers spec into detailed implementation tasks.
-
-It does not decide what done means. Done is defined by the spec's `Acceptance Gates`, including their criteria, proof approaches, and expected evidence. This skill copies those gates unchanged, operationalizes proof approaches with commands or procedures, adds supporting verification, and organizes implementation into TDD-friendly tasks.
-
 **Announce at start:** "I'm using the write-plan skill to operationalize the approved spec into an implementation plan."
 
 ## Input
 
-`write-plan` requires an approved Meanpowers spec.
-
-If no spec is provided, ask which spec to use. Do not create a plan without a matching spec.
-
-If the spec is not approved or has unresolved acceptance gates, stop and return to `meanpowers:write-spec`.
-
-Approval must be explicit in the spec or conversation. Do not infer approval from the fact that a draft spec exists.
+`write-plan` requires a Meanpowers spec:
+- If no spec is provided, ask which spec to use.
+- Do not create a plan without a matching spec.
 
 ## Non-Negotiable Gate Rule
 
 Acceptance gates are copied from the spec, including gate names, criteria, proof approaches, and expected evidence. The plan may add exact commands, scripts, browser procedures, or manual procedures for proving them, but it must not weaken, rename, invent, or silently change them.
 
-If a gate cannot be operationalized, stop and revise the spec before planning.
+If a gate cannot be operationalized and automated, stop and notify the user.
 
 ## Output
 
-Write an implementation plan that includes:
+`write-plan` turns an approved Meanpowers spec into detailed implementation tasks.
 
-- spec contract
-- non-goals and design constraints from the spec
-- acceptance gates copied from the spec, including criteria and expected evidence
-- gate execution commands or procedures
-- supporting verification
-- detailed tasks with files and steps
-- per-task `Supports` links to gates or supporting verification
-- checkpoint rule before moving to the next slice
-- Superpowers execution handoff
+Its role is to make the approved spec executable. It preserves the spec's `Acceptance Gates` as the completion contract, translates proof approaches into exact commands or procedures, adds supporting verification, and organizes the work into TDD-friendly tasks that can be handed to Superpowers execution.
+
+Assume the plan will be handed to an engineer that has zero context for our codebase and questionable taste.
+
+Document everything they need to know: which files to touch for each task, code, testing, docs they might need to check, how to test it. Give them the whole plan as bite-sized tasks. DRY. YAGNI. TDD. Frequent commits.
+
+Assume they are a skilled developer, but know almost nothing about our toolset or problem domain. Assume they don't know good test design very well.
 
 ## Plan Creation Principles
 
 Before defining tasks, map out which files will be created or modified and what each one is responsible for. This is where decomposition decisions get locked in.
 
-- Design units with clear boundaries and well-defined interfaces.
+- Design units with clear boundaries and well-defined interfaces. Each file should have one clear responsibility.
 - Prefer smaller, focused files over large files that do too much.
-- Files that change together should live together.
+- Files that change together should live together. Split by responsibility, not by technical layer.
 - Follow established codebase patterns.
 - Include targeted refactoring when it directly supports the current work.
+
+This structure informs the task decomposition. Each task should produce self-contained changes that make sense independently.
 
 ## Acceptance Gates And Supporting Verification
 
@@ -66,22 +58,24 @@ Each slice must include:
 
 ## Task Structure
 
-Keep tasks detailed and TDD-friendly. A task should be self-contained enough to execute without guessing.
+- Tasks are the smallest implementation increments that can be identified while still leaving the codebase coherent after the task is complete.
+- Number tasks by slice: `Task 1.1`, `Task 1.2`, then `Task 2.1`, `Task 2.2`, and so on.
+- When a task changes testable behavior, use strict TDD: write the failing test, run it to confirm the expected failure, implement the smallest change, and run focused verification.
+- For non-behavioral tasks, keep the same small-increment discipline and make the verification step explicit.
+- Use exact code when it materially reduces ambiguity.
+- Do not use placeholders like "add appropriate validation" or "handle edge cases."
 
-Each task must include:
-
-- purpose
-- files to create, modify, or test
-- what acceptance gate or supporting verification it supports
-- bite-sized steps
-- commands and expected results where relevant
-
-Use exact code when it materially reduces ambiguity. Do not use placeholders like "add appropriate validation" or "handle edge cases."
+**Each step is one action (2-5 minutes):**
+- "Write the failing test" - step
+- "Run it to make sure it fails" - step
+- "Implement the minimal code to make the test pass" - step
+- "Run the tests and make sure they pass" - step
+- "Commit" - step
 
 ## Task Template
 
 ````markdown
-### Task N: [Component Name]
+### Task S.N: [Smallest coherent implementation increment]
 
 **Purpose:**
 [Why this task exists]
@@ -108,14 +102,14 @@ def test_specific_behavior():
 Run: `pytest tests/path/test.py::test_name -v`
 Expected: FAIL because ...
 
-- [ ] **Step 3: Implement minimal code**
+- [ ] **Step 3: Write minimal implementation**
 
 ```python
 def function(input):
     return expected
 ```
 
-- [ ] **Step 4: Run focused verification**
+- [ ] **Step 4: Run test to verify it passes**
 
 Run: `pytest tests/path/test.py::test_name -v`
 Expected: PASS
@@ -125,7 +119,7 @@ Expected: PASS
 Run: `...`
 Expected: ...
 
-- [ ] **Step 6: Commit checkpoint if appropriate**
+- [ ] **Step 6: Commit**
 
 ```bash
 git add ...
@@ -155,7 +149,6 @@ Fix issues inline before presenting the plan.
 Follow the canonical Meanpowers file-management rules from `meanpowers:use-meanpowers`.
 
 For this skill:
-
 - create the matching plan file for the selected spec
 - replace `_spec_` with `_plan_` in the filename
 - do not change the spec file unless a gate must be revised
