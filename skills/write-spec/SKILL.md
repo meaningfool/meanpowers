@@ -40,41 +40,30 @@ Use `references/acceptance-gates.md` for gate, criterion, proof, and example gui
 
 Follow these steps in order. The subsections below are part of the process, not separate optional guidance.
 
-The process produces the spec template sections as it goes:
+### 1. Read Input, Understand Baseline, And Decide Whether To Recommend Shape
 
-- Step 1 produces `Baseline` and the decision to continue with `write-spec` or route to `meanpowers:shape`.
-- Step 2 produces `Target System`, `Non-Goals`, `Design And Implementation Constraints`, and `Decisions`.
-- Step 3 produces validated target sections.
-- Step 4 produces `Slices`.
-- Step 5 produces `Acceptance Gates`.
-- Step 6 produces `Supporting Verification`.
-- Step 7 produces approval state and handoff.
+**Agent work:**
+- Read the change proposal, work item, shaping output, or conversation scope.
+- Inspect existing docs/code only enough to identify the affected system surface and current baseline.
+- Decide whether the uncertainty is contained enough for `write-spec`, or broad enough to recommend `meanpowers:shape`.
 
-### 1. Read Input, Understand Baseline, And Check Scope
+Recommend `meanpowers:shape` only when uncertainty is likely to require broad exploration before a spec can be written:
+- `Problem space broad`: the user need, operational pain, or reason for the change could imply substantially different outcomes.
+- `Surface broad`: the affected product flow, API, report, data model, workflow, or subsystem cannot be narrowed to a contained area.
+- `Direction broad`: the input requires choosing between substantially different product/workflow directions or system shapes.
+- `Boundaries broad`: the input appears to bundle multiple independent changes or could split into meaningfully different work items.
 
-Read the input change proposal, work item, shaping output, or conversation scope.
+If the uncertainty is specific and contained, stay in `write-spec` and resolve it through target-design questions.
 
-Read the docs, code, commit history, or existing artifacts only enough to understand how the system works and behaves in the vicinity of the requested change.
-
-Reframe the requested change against the baseline:
-
-```text
-CHANGE {i}
-Baseline: {1-2 short sentences}
-Target: {1-2 short sentences}
-Intent: {1 sentence}
--------
-```
-
-Start from what the input already tells you. Ask baseline questions only when the current behavior depends on user or product intent that the code cannot reveal.
-
-After understanding the baseline, continue with `write-spec` when the work has a clear target and the remaining decisions can be resolved while writing the spec.
-
-Route to `meanpowers:shape` when the work is either large or vague or high-uncertainty. If routing to shape, stop and say: `REQUIRED NEXT SKILL: meanpowers:shape`.
+**User interaction:**
+- If recommending shape, present the recommendation and the criteria that triggered it.
+- Ask the user to confirm the route.
+- Only after the user confirms, use the skill tool to call `meanpowers:shape`.
+- If not recommending shape, continue to target design without asking for route confirmation.
 
 ### 2. Design The Target With The User
 
-**Designing the target:**
+**User interaction:**
 - Interview the user relentlessly about every aspect of this scope until you reach a shared understanding. Walk down each branch of the design tree, resolving dependencies between decisions one-by-one.
 - Ask the questions one at a time.
 - Think of multiple approaches, repeatedly. What trade-offs do they reveal?
@@ -82,11 +71,11 @@ Route to `meanpowers:shape` when the work is either large or vague or high-uncer
 - Lead with your recommended option and explain why
 - If a question can be answered by exploring the codebase, explore the codebase instead.
 
-The target system is broader than user-visible behavior. It may include internal structure, data contracts, migration choices, error handling, observability, compatibility, or constraints that shape implementation.
+Designing the target system includes internal structure, data contracts, migration choices, error handling, observability, compatibility, or constraints that shape implementation.
 
-Capture meaningful target decisions as you make them: selected approach, rejected options, tradeoffs, constraints, non-goals, and any deviation from shaping decisions. These decisions feed the spec's `Target System`, `Non-Goals`, `Design And Implementation Constraints`, and `Decisions` sections.
+As the target takes shape, record selected approaches, rejected options and tradeoffs, constraints, non-goals, and deviations from shaping decisions. These feed the spec's `Target System`, `Non-Goals`, `Design And Implementation Constraints`, and `Decisions` sections.
 
-Design principles to use during target design:
+#### Design Principles
 
 - Break the system into smaller units that each have one clear purpose, communicate through well-defined interfaces, and can be understood and tested independently
 - For each unit, you should be able to answer: what does it do, how do you use it, and what does it depend on?
@@ -95,7 +84,7 @@ Design principles to use during target design:
 
 ### 3. Present The Target For Validation
 
-**Presenting the target:**
+**User interaction:**
 - Once you believe most design decisions have been made, present the design
 - Scale each section to its complexity: a few sentences if straightforward, up to 200-300 words if nuanced
 - Ask after each section whether it looks right so far
@@ -104,98 +93,73 @@ Design principles to use during target design:
 
 Include non-goals and design constraints in the target presentation. Non-goals are what the spec explicitly does not change. Constraints are contract-relevant decisions from Step 2 that implementation must respect.
 
-Examples:
-
-- preserve a public API
-- reuse an existing subsystem instead of introducing a new dependency
-- preserve a storage format
-- require browser live validation for browser-facing behavior
-- exclude a compatibility mode
-- keep provider-specific logic behind a named abstraction
-- preserve a generated report schema except for the stated additions
-
-Tactical execution details belong in `meanpowers:write-plan`, not in the spec.
-
 ### 4. Define Slices
 
-Use slices only when sequencing is needed. Do not force slices for small work.
+**Agent work:**
+- Decide whether sequencing is needed. Do not force slices for small work.
+- If the spec comes from shaping, use shaping slices as a starting point.
+- If you refine, merge, or split shaping slices, briefly explain what changed and why.
+- For each proposed slice, define the behavioral delta.
 
-If the spec comes from shaping, shaping slices are a starting point. You may refine, merge, or split them, but do not silently change shaping decisions. Call out any deviation from the shaping document before asking for approval.
+The behavioral delta says what becomes different after this slice. For user-facing work, prefer externally observable system behavior deltas. For refactors or architecture work, the delta may be a structural change plus preserved behavior.
 
-Every slice must have:
-
-- behavioral delta
-- acceptance gates with criteria and proofs
-- supporting verification, if useful
-
-The behavioral delta says what becomes different after this slice. For user-facing work, prefer externally meaningful deltas. For refactors or architecture work, the delta may be a structural change plus preserved behavior.
+**User interaction:**
+- Present slices for validation when there is more than one slice, when sequencing is ambiguous, or when you changed shaping slices.
+- Ask whether the slice boundaries and order look right before defining acceptance gates.
 
 ### 5. Define Acceptance Gates
 
-Use `references/acceptance-gates.md` while writing gates.
+**Agent work:**
+- Use `references/acceptance-gates.md` while writing gates.
+- Define acceptance gates for each slice.
+- Define enough gates to prove the slice is complete, but avoid turning supporting checks into gates.
 
-Acceptance gates are blocking checkpoints. They combine intent and evidence so an implementation agent can tell whether the slice is complete.
-
-Each gate should include:
-
+Each gate must include:
 - why the gate matters
 - criteria that state what must be true
 - proof approach, such as browser, CLI, backend test, integration test, replay, static inspection, live validation, or manual procedure
 - expected evidence the agent must produce before claiming completion
 
-If you cannot define gates clearly, ask clarifying questions or route back to `meanpowers:shape`.
-
-Use the gate structure from the template:
-
-- `Why this gate matters`
-- `Criteria`
-- `Proof approach`
-- `Expected evidence`
-
 Criteria state the intended conditions. Proof approach states how those conditions can be proven. `meanpowers:write-plan` later turns proof approaches into exact commands or procedures.
+
+**User interaction:**
+- Ask targeted questions only when a criterion cannot be made concrete.
+- Present gates for validation before moving to supporting verification.
 
 ### 6. Define Supporting Verification
 
-Define supporting verification separately from acceptance gates. Supporting verification improves implementation confidence but does not define done.
+**Agent work:**
+- Define supporting verification separately from acceptance gates.
+- Use supporting verification for checks that improve implementation confidence but do not define done.
+- Prefer supporting verification for helper-level tests, adapter tests, type checks, fixture/replay checks, lint checks, and focused regression tests that do not prove the behavioral delta by themselves.
+- Do not duplicate acceptance gates as supporting verification.
 
-Examples:
+**User interaction:**
+- Do not ask for validation by default.
+- Ask only when a supporting check would add meaningful cost, slow feedback loops, or expand the implementation scope.
 
-- helper unit tests
-- adapter tests
-- type checks
-- fixture/replay checks
-- lint checks
-- focused regression tests that do not prove the behavioral delta by themselves
+### 7. Self-Review
 
-### 7. Self-Review And Approval
+**Agent work:**
+- Run an adversarial self-review against the spec before presenting it.
+- Check especially for vague target language, missing non-goals, missing constraints, weak gates, missing proof approaches, placeholders, and implementation task steps.
+- Fix issues inline before presenting the spec.
 
-Before asking for approval, verify:
+### 8. Present Final Spec For Approval
 
-- no placeholders remain
-- every slice has a behavioral delta
-- every slice has acceptance gates
-- non-goals are explicit
-- design and implementation constraints are captured
-- supporting verification is separate from acceptance gates
-- the spec contains no implementation task steps
-- deviations from shaping are called out
-- the user can tell exactly what proof is required before implementation can be called complete
-
-Fix issues inline before presenting the spec.
-
-Present the spec to the user for approval. Do not save the final spec until the user approves it.
-
-After approval, save the spec and state `REQUIRED NEXT SKILL: meanpowers:write-plan`.
+**User interaction:**
+- Present the final spec for approval.
+- Do not save the final spec until the user approves it.
+- If the user requests changes, revise the relevant section and present it again.
+- After approval, save the spec and state `REQUIRED NEXT SKILL: meanpowers:write-plan`.
 
 ## File Operations
 
 Follow the canonical Meanpowers file-management rules from `meanpowers:use-meanpowers`.
 
 For this skill:
-
 - create the next spec file in the selected work item folder
 - use the canonical spec prefix and slug rules
-- do not create a plan file
 - do not save the final spec until the user approves it
 
 ## Handoff
