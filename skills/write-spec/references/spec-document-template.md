@@ -1,43 +1,78 @@
-## Structure of a spec document
-
-```markdown
 # Spec: [Title]
 
-## Objective
-- What behaviour change this spec introduces
+## Source
 
-## Non-goals
-- What this spec does not attempt to change.
+- Work item:
+- Shaping doc/slice/subset, if any:
+
+## Objective
+
+[What change this spec introduces.]
+
+## Baseline
+
+[What the system does now, only as much as needed.]
+
+## Target System
+
+[What the target system must do or become after this work.]
+
+## Non-Goals
+
+[What this spec explicitly does not change.]
+
+## Design And Implementation Constraints
+
+[Decisions that affect implementation but belong in the contract.]
 
 ## Slices
 
-[List all the slices/sub-slices with their respective acceptance criteria and acceptance tests]
+[Use only if sequencing is needed. For small work, use one slice.]
 
-### Slice N: [Name]
+### Slice 1: [Name]
 
-**Goal:** [What behaviour change this slice introduces]
+**Behavioral delta:**
 
-**Description:** [Description of the baseline and the target]
+[What is observably different after this slice.]
 
-**Acceptance criteria:**
-- [acceptance criterion 1]
-- [acceptance criterion 2]
-- ...
+**Acceptance Gates**
 
-#### System changes
-[List of system changes to be done in this slice]
+These gates define completion. If any gate fails or is not run, this slice is incomplete.
 
----
+### Gate 1: [Name]
 
-## Decision record
+**Why this gate matters:**
 
-[List all the meaningful decisions and tradeoffs with regards to the system design, rejected options with rationale. If shaping.md exist, link to it, and list only the additional decisions.]
+[The risk or intended outcome this gate protects.]
 
+**Criteria:**
 
-```
+- [Concrete condition that must be true.]
 
+**Proof approach:**
 
+[Browser / CLI / backend test / integration test / replay / static inspection / live validation / manual procedure.]
 
+**Expected evidence:**
 
+[What the agent must show before calling this complete.]
 
+**Supporting Verification**
 
+Useful checks that do not define completion.
+
+- [Useful check, or "None beyond acceptance gates."]
+
+## Decisions
+
+- [Decision, tradeoff, rejected option]
+
+## Handoff To Plan
+
+- Approved by user: [yes/no]
+- Slices ready for planning:
+- Open questions:
+
+If approved:
+
+REQUIRED NEXT SKILL: `meanpowers:write-plan`

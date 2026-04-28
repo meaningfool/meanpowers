@@ -1,93 +1,63 @@
 ---
 name: write-spec
-description: Use when a Meanpowers work item or shaped slice is scoped enough to define target behavior, non-goals, slices, and acceptance gates before implementation planning
+description: Use when a change proposal, Meanpowers work item, or Meanpowers shaping output is scoped enough to define target behavior, non-goals, slices, and acceptance gates before implementation planning
 ---
 
 # Writing Specs
 
+`write-spec` turns a scoped change proposal, Meanpowers work item, or Meanpowers shaping output into a behavioral contract.
+
+It defines what will change, what will not change, which design and implementation constraints matter, and which `Acceptance Gates` define done.
+
+**Announce at start:** "I'm using the write-spec skill to define the behavioral contract and acceptance gates."
+
 ## Input
-`write-spec` receives a scope as input. That scope may come from:
-- A conversation or document
-- A shaping session to which the user would point
 
-If the user points to a shaping session, make sure to clarify which slices or sub-slices from that session should be considered as the input scope. 
+`write-spec` receives one scoped change proposal, work item, or Meanpowers shaping output. The input is ready for spec writing only when the user has made the target scope explicit enough to define behavior and acceptance gates.
 
-## Output
-`write-spec` writes comprehensive specs assuming that the engineering manager in charge of processing them does not know about the users, their needs, and does not have access to the Product Manager. They will likely mess up anything that is left to them to interprete.
+Inputs may come from:
 
-`write-spec` does 2 things: 
-1. Specify what the target system and its behaviour are and what changes need to be made to the current system. 
-2. Slice the work into a sequence of `vertical slices`, unambiguously defined through `acceptance criteria`. 
-3. Capture decisions made with regards to the system design
+- a Meanpowers inbox item
+- a Meanpowers shaping document
+- a specific slice or work item within a Meanpowers shaping document
+- another document that proposes changes, such as an audit, review, investigation, transcript, or project note
+- the current conversation, if the user has already scoped the work clearly
 
-Note if the input is from a shaping session:
-- The work has already be sliced. But the slices provided are non-binding. 
-- Similarly the system design was decided on a much larger scope. The decisions made during the shaping session should be considered as a starting point, and should not be changed silently. But the `write-spec` process is the opportunity to identify gaps, or challenge assumptions that may have been missed during the shaping session.
-- Shaping sessions have multi-level sub-slicing to enable for slicing large scopes. `specs` have a single level: slices cannot be sub-sliced for clarity. 
+If the user points to a Meanpowers shaping document, clarify which slice, work item, or scoped subset should be included in the spec when that is not already explicit.
 
-**Announce at start:** "I'm using the write-spec skill to create the specification."
+## Core Terms
 
-## File Management
+- `Baseline`: the current system behavior, interface, data shape, workflow, or internal structure near the requested change. Include only the parts needed to explain what currently happens and why the requested change matters.
+- `Target System`: the intended post-change system, including behavior, outputs, interfaces, internal design choices, and constraints that matter for implementation.
+- `Acceptance Gate`: a blocking completion checkpoint for a slice. If a gate fails or is not run, that slice is not complete.
+- `Acceptance Criterion`: one concrete condition inside a gate. It describes what must be true from the perspective of a user, operator, external system, API consumer, or maintainer.
+- `Acceptance Proof`: the runnable or inspectable evidence that proves the criterion.
+- `Supporting Verification`: useful checks that improve implementation confidence but do not define done.
 
-```
-docs/
-└── meanpowers/
-    ├── inbox/
-    │   ├── INB-0002.md
-    │   └── INB-0003.md
-    └── 01_item-name/
-        ├── INB-0001.md
-        ├── 010_spike_spike-name.md
-        ├── 010_shaping_item-name.md
-        ├── 011_spec_title-of-the-spec.md
-        ├── 011_plan_title-of-the-corresponding-spec.md
-        ├── 012_spec_title-of-the-2nd-spec.md
-        └── 012_plan_title-of-the-2nd-spec.md
-```
-
-A spec document:
-- Lives in a `work-item` folder, which has an index and a name (example: `01_item-name` has index `01`)
-- Has its own index that concatenates the `work-item` index (example in `011_spec_title-of-the-spec.md`, `011` is made of `01`, the index of the `work-item` followed by `1`, the index of the spec)
-- The index of the spec is incremented by 1 if specs already exist in the work-item folder. 1 otherwise.
-- The name of the spec is `[index]_spec_[title of the spec].md`
-
-
-## Core Principles
-
-- `slices`: unless the work is pure refactoring, slices are strictly vertical slices, meaning they encode an observable change in the system's behaviour, and are demoable in the UI.
-- `acceptance criteria`: human-readable verifiable condition that the intended behavioral change is complete.
-
-### Good Acceptance Criteria
-Good acceptance criteria are:
-
-- `Slice-specific`: they specifically characterize the behavioral change of their slice. They do not describe unrelated system behaviours.
-- `Human-readable`: they are easy for a reviewer to read and use as an alignment tool.
-- `Externally meaningful`: they describe observable outputs, user-visible behavior, protocol behavior, or state transitions.
-- `Minimal`: they are only numerous enough to define the slice's contract.
-
-Good practices:
-- Starts from a clear actor and a clear action
-- Names the concrete thing that comes out of the system
-  - examples: `get a report`, `writes audio.pcm`, `is visible from another worktree`
-- Says what happens in plain words without requiring knowledge of the internals
-- States the new behavior positively. Contrasts it with the current baseline if that provides additional clarity.
-- Uses details only when they define the scope in a meaningful way
-
-### Bad Acceptance Criteria
-- Says what the system `accepts`, `maps`, `preserves`, or `is`, instead of saying what happens
-- Talks about hidden machinery instead of the thing the actor does or gets
-- Describes a judgment in someone's head instead of a system output. Examples: `can understand`, `legible`, `readable`
-- Uses vague scope words that are not defined in the sentence. Examples: `minimal`, `control plan`, `interface contract` 
-- Uses passive phrasing that hides who is acting. Examples: `a benchmark can be declared`, `a recording can be added`
-- States what is no longer true instead of stating the new behavior positively. Example: `no longer assumes`
-- Concerns itself with implementation details the actor does not care about directly
-
+Use `references/acceptance-gates.md` for gate, criterion, proof, and example guidance.
 
 ## Process
 
-If the spec follows a shaping session you can skip step 1, and proceed to step 2 directly.
+Follow these steps in order. The subsections below are part of the process, not separate optional guidance.
 
-### 1-Define the target
+The process produces the spec template sections as it goes:
+
+- Step 2 produces `Baseline`, `Target System`, and early `Decisions`.
+- Step 3 produces `Non-Goals` and `Design And Implementation Constraints`.
+- Step 4 produces `Slices`.
+- Step 5 produces `Acceptance Gates`.
+- Step 6 produces `Supporting Verification`.
+- Step 7 produces approval state and handoff.
+
+### 1. Read Input And Run Scope Check
+
+Read the input change proposal, work item, shaping output, or conversation scope.
+
+Continue with `write-spec` when the work has a clear target and the remaining decisions can be resolved while writing the spec.
+
+Route to `meanpowers:shape` when the work is either large or vague or high-uncertainty. If routing to shape, stop and say: `REQUIRED NEXT SKILL: meanpowers:shape`.
+
+### 2. Define The Target
 
 **Understanding the changes:**
 - Baseline: read the docs, code, commit history to understand how the system works and behave in the vicinity of the required changes.
@@ -99,7 +69,9 @@ Target: {1-2 short sentences}
 Intent: {1 sentence}
 -------
 ```
-- Note: these are the starting point. The best break-down for the expected changes may change during the next phase. 
+- Note: these are the starting point. The best break-down for the expected changes may change during the next phase.
+
+The baseline is the current system behavior, interface, data shape, workflow, or internal structure near the requested change. Start from what the input already tells you and only read enough surrounding context to make the requested change understandable. Revise the baseline later if the target discussion reveals that an important current behavior was missing.
 
 **Designing the target:**
 - Interview the user relentlessly about every aspect of this scope until you reach a shared understanding. Walk down each branch of the design tree, resolving dependencies between decisions one-by-one.
@@ -108,6 +80,10 @@ Intent: {1 sentence}
 - Present options and the corresponding tradeoff conversationally with your recommendation and reasoning
 - Lead with your recommended option and explain why
 - If a question can be answered by exploring the codebase, explore the codebase instead.
+
+The target system is broader than user-visible behavior. It may include internal structure, data contracts, migration choices, error handling, observability, compatibility, or constraints that shape implementation.
+
+Capture meaningful target decisions as you make them: selected approach, rejected options, tradeoffs, constraints, and any deviation from shaping decisions. These decisions feed the spec's `Target System`, `Design And Implementation Constraints`, and `Decisions` sections.
 
 **Presenting the target:**
 - Once you believe most design decisions have been made, present the design
@@ -122,31 +98,110 @@ Intent: {1 sentence}
 - Can someone understand what a unit does without reading its internals? Can you change the internals without breaking consumers? If not, the boundaries need work.
 - Smaller, well-bounded units are also easier for you to work with - you reason better about code you can hold in context at once, and your edits are more reliable when files are focused. When a file grows large, that's often a signal that it's doing too much.
 
-### 2-Define the slices
+### 3. Define Non-Goals And Constraints
 
-**Explore slicing options:**
-- Slice vertically into slices way, way smaller than you otherwise would. Like, 10x smaller.
-- When a small behavioural change still requires a significant amount of change in the system (e.g. adding a mobile native app), you may create intermediate slices that are mostly technical, as long as those slices produce a demoable output (e.g. a first slice with a mobile app that displays "Hello World", followed by slices integrating the UI and the data by chunks up to the point where it is actually usable)
+Define what the spec explicitly does not change.
 
-**Define sequencing options:**
-- Identify 2-3 ways to sequence the slices.
-- Present to the user with the tradeoff for each option, and your recommandation.
+Capture design and implementation constraints that emerged while defining the target. These are not a new discovery phase; they are the contract-relevant decisions from Step 2 that implementation must respect.
 
-**Define acceptance criteria:** 
-- For each slice, define 1 or multiple acceptance criteria
+Examples:
 
-**Present to the user:**
-- Present each slice with its acceptance criteria
+- preserve a public API
+- reuse an existing subsystem instead of introducing a new dependency
+- preserve a storage format
+- require browser live validation for browser-facing behavior
+- exclude a compatibility mode
+- keep provider-specific logic behind a named abstraction
+- preserve a generated report schema except for the stated additions
 
-**Write the spec:**
-- Use the template `references/spec-document-template.md`
+Tactical execution details belong in `meanpowers:write-plan`, not in the spec.
 
-### 3-Execution Handoff
+### 4. Define Slices
 
-After saving the plan, offer execution choice:
+Use slices only when sequencing is needed. Do not force slices for small work.
 
-**"Plan complete and saved."**
-**Next step: use write-plan to write the implementation plan. Say "ok" or "yes" to proceed.**
+If the spec comes from shaping, shaping slices are a starting point. You may refine, merge, or split them, but do not silently change shaping decisions. Call out any deviation from the shaping document before asking for approval.
 
-**If go ahead:**
-- **REQUIRED SUB-SKILL:** Use meanpowers:write-plan
+Every slice must have:
+
+- behavioral delta
+- acceptance gates with criteria and proofs
+- supporting verification, if useful
+
+The behavioral delta says what becomes different after this slice. For user-facing work, prefer externally meaningful deltas. For refactors or architecture work, the delta may be a structural change plus preserved behavior.
+
+### 5. Define Acceptance Gates
+
+Use `references/acceptance-gates.md` while writing gates.
+
+Acceptance gates are blocking checkpoints. They combine intent and evidence so an implementation agent can tell whether the slice is complete.
+
+Each gate should include:
+
+- why the gate matters
+- criteria that state what must be true
+- proof approach, such as browser, CLI, backend test, integration test, replay, static inspection, live validation, or manual procedure
+- expected evidence the agent must produce before claiming completion
+
+If you cannot define gates clearly, ask clarifying questions or route back to `meanpowers:shape`.
+
+Use the gate structure from the template:
+
+- `Why this gate matters`
+- `Criteria`
+- `Proof approach`
+- `Expected evidence`
+
+Criteria state the intended conditions. Proof approach states how those conditions can be proven. `meanpowers:write-plan` later turns proof approaches into exact commands or procedures.
+
+### 6. Define Supporting Verification
+
+Define supporting verification separately from acceptance gates. Supporting verification improves implementation confidence but does not define done.
+
+Examples:
+
+- helper unit tests
+- adapter tests
+- type checks
+- fixture/replay checks
+- lint checks
+- focused regression tests that do not prove the behavioral delta by themselves
+
+### 7. Self-Review And Approval
+
+Before asking for approval, verify:
+
+- no placeholders remain
+- every slice has a behavioral delta
+- every slice has acceptance gates
+- non-goals are explicit
+- design and implementation constraints are captured
+- supporting verification is separate from acceptance gates
+- the spec contains no implementation task steps
+- deviations from shaping are called out
+- the user can tell exactly what proof is required before implementation can be called complete
+
+Fix issues inline before presenting the spec.
+
+Present the spec to the user for approval. Do not save the final spec until the user approves it.
+
+After approval, save the spec and state `REQUIRED NEXT SKILL: meanpowers:write-plan`.
+
+## File Operations
+
+Follow the canonical Meanpowers file-management rules from `meanpowers:use-meanpowers`.
+
+For this skill:
+
+- create the next spec file in the selected work item folder
+- use the canonical spec prefix and slug rules
+- do not create a plan file
+- do not save the final spec until the user approves it
+
+## Handoff
+
+After the user approves the spec and it is saved, state:
+
+```text
+REQUIRED NEXT SKILL: meanpowers:write-plan
+```

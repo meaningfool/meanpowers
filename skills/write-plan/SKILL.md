@@ -5,174 +5,95 @@ description: Use when creating an implementation plan from an approved Meanpower
 
 # Writing Plans
 
+`write-plan` turns an approved Meanpowers spec into detailed implementation tasks.
+
+It does not decide what done means. Done is defined by the spec's `Acceptance Gates`, including their criteria, proof approaches, and expected evidence. This skill copies those gates unchanged, operationalizes proof approaches with commands or procedures, adds supporting verification, and organizes implementation into TDD-friendly tasks.
+
+**Announce at start:** "I'm using the write-plan skill to operationalize the approved spec into an implementation plan."
+
 ## Input
 
-- `write-plan` receives a `spec` as input
-- That spec provides: `slices` and`acceptance-criteria`, and design decisions made during `write-spec` (and possibly the `shaping`) phases.
+`write-plan` requires an approved Meanpowers spec.
+
+If no spec is provided, ask which spec to use. Do not create a plan without a matching spec.
+
+If the spec is not approved or has unresolved acceptance gates, stop and return to `meanpowers:write-spec`.
+
+Approval must be explicit in the spec or conversation. Do not infer approval from the fact that a draft spec exists.
+
+## Non-Negotiable Gate Rule
+
+Acceptance gates are copied from the spec, including gate names, criteria, proof approaches, and expected evidence. The plan may add exact commands, scripts, browser procedures, or manual procedures for proving them, but it must not weaken, rename, invent, or silently change them.
+
+If a gate cannot be operationalized, stop and revise the spec before planning.
 
 ## Output
-`write-plan` writes comprehensive implementation plans assuming the engineer that will do the implementation has zero context for our codebase and questionable taste.
 
-`write-plan` does 2 things:
-1. Translates acceptance criteria into acceptance tests that can be run automatically.
-2. Maps out the work for each slice and divides it into tasks
+Write an implementation plan that includes:
 
-Document everything they need to know: which files to touch for each task, code, testing, docs they might need to check, how to test it. Give them the whole plan as bite-sized tasks. DRY. YAGNI. TDD. Frequent commits.
+- spec contract
+- non-goals and design constraints from the spec
+- acceptance gates copied from the spec, including criteria and expected evidence
+- gate execution commands or procedures
+- supporting verification
+- detailed tasks with files and steps
+- per-task `Supports` links to gates or supporting verification
+- checkpoint rule before moving to the next slice
+- Superpowers execution handoff
 
-Assume they are a skilled developer, but know almost nothing about our toolset or problem domain. Assume they don't know good test design very well.
+## Plan Creation Principles
 
-**Announce at start:** "I'm using the write-plan skill to create the implementation plan."
+Before defining tasks, map out which files will be created or modified and what each one is responsible for. This is where decomposition decisions get locked in.
 
-## File Management
+- Design units with clear boundaries and well-defined interfaces.
+- Prefer smaller, focused files over large files that do too much.
+- Files that change together should live together.
+- Follow established codebase patterns.
+- Include targeted refactoring when it directly supports the current work.
 
-```
-docs/
-└── meanpowers/
-    ├── inbox/
-    │   ├── INB-0002.md
-    │   └── INB-0003.md
-    └── 01_item-name/
-        ├── INB-0001.md
-        ├── 010_spike_spike-name.md
-        ├── 010_shaping_item-name.md
-        ├── 011_spec_title-of-the-spec.md
-        ├── 011_plan_title-of-the-corresponding-spec.md
-        ├── 012_spec_title-of-the-2nd-spec.md
-        └── 012_plan_title-of-the-2nd-spec.md
-```
+## Acceptance Gates And Supporting Verification
 
-A plan document:
-- Lives in a `work-item` folder, which has an index and a name (example: `01_item-name` has index `01`)
-- Always matches a `spec` document. 
-- Has the same name as it's matching spec document, except for `plan` replacing `spec`: `[index]_spec_[title of the spec].md` translates into `[index]_plan_[title of the spec].md`
+Acceptance gates sit above TDD. They prove the slice is complete.
 
-**If the plan follows a spec:** read and understand the spec and the shaping document if there is one. Gather context as you need.
+Supporting verification helps implementation confidence but does not define completion.
 
-**If you are not provided a spec to start from:** ask which spec you should start from. You ABSOLUTELY CANNOT start working on a plan without a matching spec.
+Each slice must include:
 
-## Plan creation principles
-
-### General principles
-
-- Before defining tasks, map out which files will be created or modified and what each one is responsible for. This is where decomposition decisions get locked in.
-- Design units with clear boundaries and well-defined interfaces. Each file should have one clear responsibility.
-- You reason best about code you can hold in context at once, and your edits are more reliable when files are focused. Prefer smaller, focused files over large ones that do too much.
-- Files that change together should live together. Split by responsibility, not by technical layer.
-- In existing codebases, follow established patterns. If the codebase uses large files, don't unilaterally restructure - but if a file you're modifying has grown unwieldy, including a split in the plan is reasonable.
-
-### Tasks
-
-- Each `task` should produce self-contained changes that make sense independently.
-- Each `task` must be identified as either `refactoring` or `behavioral change`. A single task can't mix both.
-
-### Acceptance tests
-
-- `Acceptance test`: the concrete automated proof that an acceptance criterion is met.
-- `Verification test`: Any unit, integration, replay, seam, helper, or regression test that improves implementation confidence.
-
-Acceptance is orthogonal to the test pyramid.
-
-An acceptance test may live at different sizes or layers depending on what is required to prove the behavior:
-
-- a backend unit test
-- a backend integration test
-- a CLI-driven integration test
-- a browser-driven end-to-end test
-- a frontend test
-- a non-pytest automated live validation named explicitly in the spec or plan
-
-The test should live where it naturally belongs technically.Acceptance status does not determine placement. Technical ownership and the best execution harness determine placement.
-
-### Good Acceptance Tests
-
-Good acceptance tests are:
-
-**Behavior-oriented:** They prove the intended behavior, not the implementation structure.
-
-**Smallest realistic proof:** They are the smallest tests that still prove the behavior credibly.
-
-**Durable:** They remain useful as part of the regression surface after the phase lands.
-
-**Runnable:** They have concrete inputs, concrete execution steps, and concrete expected outcomes.
-
-**Non-duplicative:** They should not create an "acceptance copy" of a test if an existing test already provides the smallest realistic proof of the behavior.
-
-Acceptance tests are not:
-- implementation task lists
-- helper-level checks that do not prove user-visible or externally meaningful
-  behavior
-- purely structural assertions
-- implementation-detail assertions
-- broad regression sweeps unless the phase's behavioral delta is itself broad
-
-### Preventing acceptance tests combinatorial explosion
-
-Avoid combinatorial explosion by choosing the smallest durable proof surface that still captures the real contract:
-
-- keep an existing broad acceptance test when it already proves the behavioral contract that matters
-- prefer narrower acceptance or verification coverage for new seams, integrations, or adapters when the broad behavior is already covered
-- split an acceptance test when one broad proof is no longer the clearest or most maintainable way to represent the behavior
-- use one-off supporting verification when needed to validate a specific combination without permanently expanding the acceptance surface
-
-## Bite-Sized Task Granularity
-
-**Each step is one action (2-5 minutes):**
-- "Write the failing test" - step
-- "Run it to make sure it fails" - step
-- "Implement the minimal code to make the test pass" - step
-- "Run the tests and make sure they pass" - step
-- "Commit" - step
-
-## Plan Document Header
-
-**Every plan MUST start with this header:**
-
-```markdown
-# [Feature Name] Implementation Plan
-
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
-
-**Goal:** [One sentence describing what this builds]
-
-**Architecture:** [2-3 sentences about approach]
-
-**Tech Stack:** [Key technologies/libraries]
-
----
-```
-
-## Slice header
-
-```markdown
-## [Slice Name]
-
-**Goal:** [Description of the expected system behavioural change]
-
-**Acceptance criteria:** [List of acceptance criteria inherited from the spec]
-
-**Acceptance tests:**
-- [Plain English description of what is being proven] — `pytest tests/path/test_file.py::test_name -v`
-- [Plain English description of what is being proven] — `pytest tests/path/test_file.py::test_name -v`
-
-**Verification tests:**
-- [Plain English description of what is being verified] — `pytest tests/path/test_file.py::test_name -v`
-- [Plain English description of what is being verified] — `pytest tests/path/test_file.py::test_name -v`
-
-IMPORTANT: you cannot move on to the next slice unless you have first proven that all acceptance tests pass. A failure to prove MUST be considered as a proof of failure.
-
----
-```
-
+- `Acceptance Gates From Spec`, copied unchanged
+- `Gate Execution`, with exact commands or procedures mapped to the spec's proof approaches and expected evidence
+- `Supporting Verification`, with exact commands or procedures when known
+- `Checkpoint`, requiring all slice gates to pass before the next slice begins
 
 ## Task Structure
+
+Keep tasks detailed and TDD-friendly. A task should be self-contained enough to execute without guessing.
+
+Each task must include:
+
+- purpose
+- files to create, modify, or test
+- what acceptance gate or supporting verification it supports
+- bite-sized steps
+- commands and expected results where relevant
+
+Use exact code when it materially reduces ambiguity. Do not use placeholders like "add appropriate validation" or "handle edge cases."
+
+## Task Template
 
 ````markdown
 ### Task N: [Component Name]
 
+**Purpose:**
+[Why this task exists]
+
 **Files:**
-- Create: `exact/path/to/file.py`
-- Modify: `exact/path/to/existing.py:123-145`
-- Test: `tests/exact/path/to/test.py`
+- Create:
+- Modify:
+- Test:
+
+**Supports:**
+- Acceptance Gate: Gate 1
+- Supporting Verification:
 
 - [ ] **Step 1: Write the failing test**
 
@@ -185,72 +106,70 @@ def test_specific_behavior():
 - [ ] **Step 2: Run test to verify it fails**
 
 Run: `pytest tests/path/test.py::test_name -v`
-Expected: FAIL with "function not defined"
+Expected: FAIL because ...
 
-- [ ] **Step 3: Write minimal implementation**
+- [ ] **Step 3: Implement minimal code**
 
 ```python
 def function(input):
     return expected
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [ ] **Step 4: Run focused verification**
 
 Run: `pytest tests/path/test.py::test_name -v`
 Expected: PASS
 
-- [ ] **Step 5: Commit**
+- [ ] **Step 5: Run acceptance gate if this task completes it**
+
+Run: `...`
+Expected: ...
+
+- [ ] **Step 6: Commit checkpoint if appropriate**
 
 ```bash
-git add tests/path/test.py src/path/file.py
-git commit -m "feat: add specific feature"
+git add ...
+git commit -m "..."
 ```
 ````
 
-## No Placeholders
+## Self-Review
 
-Every step must contain the actual content an engineer needs. These are **plan failures** — never write them:
-- "TBD", "TODO", "implement later", "fill in details"
-- "Add appropriate error handling" / "add validation" / "handle edge cases"
-- "Write tests for the above" (without actual test code)
-- "Similar to Task N" (repeat the code — the engineer may be reading tasks out of order)
-- Steps that describe what to do without showing how (code blocks required for code steps)
-- References to types, functions, or methods not defined in any task
+Before saving the plan, verify:
 
-## Remember
-- Exact file paths always
-- Complete code in every step — if a step changes code, show the code
-- Exact commands with expected output
-- DRY, YAGNI, TDD, frequent commits
+- every acceptance gate from the spec appears unchanged, including criteria and expected evidence
+- every gate has a command or procedure mapped to the spec's proof approach
+- every command or procedure is realistic for the current project
+- supporting verification is separate from acceptance gates
+- tasks support the gates or verification they claim to support
+- no placeholders remain
+- file paths are exact
+- commands have expected results
+- no next slice begins before current slice gates pass
+- the plan can be handed to `superpowers:executing-plans` without reinterpreting the spec
 
-## Adversarial Self-Review
+Fix issues inline before presenting the plan.
 
-After writing the complete plan, look at the spec with fresh eyes and check the plan against it. Run an adversarial self-review using the following checklist:
+## File Operations
 
-**1. Spec coverage:** Skim each section/requirement in the spec. Can you point to a task that implements it? List any gaps.
+Follow the canonical Meanpowers file-management rules from `meanpowers:use-meanpowers`.
 
-**2. Placeholder scan:** Search your plan for red flags — any of the patterns from the "No Placeholders" section above. Fix them.
+For this skill:
 
-**3. Type consistency:** Do the types, method signatures, and property names you used in later tasks match what you defined in earlier tasks? A function called `clearLayers()` in Task 3 but `clearFullLayers()` in Task 7 is a bug.
-
-If you find issues, fix them inline. No need to re-review — just fix and move on. If you find a spec requirement with no task, add the task.
+- create the matching plan file for the selected spec
+- replace `_spec_` with `_plan_` in the filename
+- do not change the spec file unless a gate must be revised
 
 ## Execution Handoff
 
-After saving the plan, offer execution choice:
+After saving the plan, offer the default handoff:
 
-**"Plan complete and saved. Two execution options:"**
+```text
+REQUIRED HANDOFF: superpowers:executing-plans
+```
 
-**1. Subagent-Driven (recommended)** - I dispatch a fresh subagent per task, review between tasks, fast iteration
+If the environment supports it well, this is also allowed:
 
-**2. Inline Execution** - Execute tasks in this session using executing-plans, batch execution with checkpoints
-
-**Which approach?"**
-
-**If Subagent-Driven chosen:**
-- **REQUIRED SUB-SKILL:** Use superpowers:subagent-driven-development
-- Fresh subagent per task + two-stage review
-
-**If Inline Execution chosen:**
-- **REQUIRED SUB-SKILL:** Use superpowers:executing-plans
-- Batch execution with checkpoints for review
+```text
+OPTIONAL HANDOFF: superpowers:subagent-driven-development
+```
