@@ -115,10 +115,11 @@ To cross this gate, the user only needs to confirm: "The shape is final."
 
 ## Slicing Loop
 
-Create the smallest useful vertical slices. A vertical slice introduces an observable behavior or journey change and can be demonstrated.
+Create the smallest useful vertical slices. A vertical slice introduces an observable behavior or journey change and can be demonstrated:
+- Slice vertically into slices way, way smaller than you otherwise would. Like, 10x smaller.
+- When a small behavioural change still requires a significant amount of change in the system (e.g. adding a mobile native app), you may create intermediate slices that are mostly technical, as long as those slices produce a demoable output (e.g. a first slice with a mobile app that displays "Hello World", followed by slices integrating the UI and the data by chunks up to the point where it is actually usable)
 
 For each slice, include:
-
 - behavioral or journey delta
 - included shape components
 - demo scenario
