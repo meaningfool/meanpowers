@@ -2,24 +2,15 @@
 
 Meanpowers helps create specs and plans that coding agents can run autonomously.
 
-It is a companion to Superpowers: Meanpowers defines the work; Superpowers executes it.
+It draws heavy inspiration from and is a companion to Jesse Vincent's [Superpowers](https://github.com/obra/superpowers): Meanpowers defines the work; Superpowers executes it.
 
 ## Why Meanpowers Exists
 
-Meanpowers is inspired by Jesse Vincent's [Superpowers](https://github.com/obra/superpowers), a skill suite I use and admire.
+I created Meanpowers because I kept running into 2 limitations with Superpowers:
+1. Superpowers' `brainstorming` is cumbersome for quick changes / small scopes, but not elaborae enough for large / messy problems. 
+2. The brainstorming / planning flow does not plan around and enforce strongly enough `acceptance gates` for coding agents to reliably "finish" the work.
 
-I created Meanpowers because I kept running into two limitations in my own workflow.
-
-First, Superpowers' brainstorming phase was useful, but middle of the road for large or messy problems. It helped refine ideas, but it did not give me enough structure for shaping a solution when the problem space was vague, broad, or uncertain.
-
-Second, the brainstorming and planning flow did not enforce acceptance gates strongly enough. Plans could be detailed and still let the agent decide something was done even when the behavior was not actually correct.
-
-Meanpowers exists to fix those two gaps:
-
-- shape vague or large work before writing specs
-- define acceptance gates clearly enough that agents can prove completion
-
-The shaping workflow also adapts ideas from [`rjs/shaping-skills`](https://skills.sh/rjs/shaping-skills/shaping), especially requirements, solution shapes, fit checks, and slicing. That work is itself based on Shape Up-style shaping and breadboarding.
+The shaping workflow is a copy/paste from [Ryan Singer's `shaping` skill](https://github.com/rjs/shaping-skills/tree/main/shaping), with my own tweaks and some rewriting work.
 
 ## Workflow
 
