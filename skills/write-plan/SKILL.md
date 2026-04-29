@@ -146,7 +146,7 @@ Fix issues inline before presenting the plan.
 
 ## File Operations
 
-Follow the canonical Meanpowers file-management rules from `meanpowers:use-meanpowers`.
+Follow the canonical Meanpowers file-management rules in `../use-meanpowers/references/file-management.md` from this skill directory.
 
 For this skill:
 - create the matching plan file for the selected spec

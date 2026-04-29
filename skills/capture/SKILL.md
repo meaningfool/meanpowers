@@ -5,7 +5,7 @@ description: Use when a conversation, transcript, or document contains multiple 
 
 # Capture Changes
 
-Capture is a lightweight demultiplexer. It turns messy input into independent Meanpowers inbox items.
+Capture is a lightweight demultiplexer. It turns noisy input into focused independent Meanpowers inbox items.
 
 It does not create work item folders, write specs, shape solutions, define acceptance gates, or plan implementation.
 
@@ -13,7 +13,7 @@ It does not create work item folders, write specs, shape solutions, define accep
 
 ## Output
 
-Create one inbox file per validated change under `docs/meanpowers/inbox/`. Follow the canonical naming rules from `meanpowers:use-meanpowers` file-management reference:
+Create one inbox file per validated change under `docs/meanpowers/inbox/`. For canonical naming rules, read `../use-meanpowers/references/file-management.md` from this skill directory.
 
 ```text
 INB-0001_short-title.md
@@ -38,16 +38,37 @@ Do not write inbox files until the user has approved the proposed item list.
 
 Present each proposed item in this shape:
 
-```text
-CHANGE N
-Baseline: 1-2 short sentences
-Target: 1-2 short sentences
-Intent: 1 sentence
-Scope boundary: Included / excluded, if useful
-Questions for later: Non-blocking questions for shape/write-spec, if any
+```markdown
+**CHANGE N**: [change title]
+
+**Baseline:** 1 short sentence
+
+**Target:** 1 short sentence
+
+**Intent:** 1 sentence
+
+**Questions for later:** Non-blocking questions for shape/write-spec, if any
+
+---
 ```
 
-Use `Questions for later` for downstream uncertainties that do not affect the item split. Ask the user now only when the answer changes the item boundary.
+- The `baseline` and the `target` are "states" of the system's behavior (and/or internals). Use present form. 
+- Use `Questions for later` for downstream uncertainties that do not affect the item split. Ask the user now only when the answer changes the item boundary.
+
+Example:
+```markdown
+**CHANGE N**: Add tags to bookmarks
+
+**Baseline:** A user's bookmarks has a title and a creation date.
+
+**Target:** A user can add tags when creating a bookmark.
+
+**Intent:** Allow the user to navigate their bookmarks through tags.
+
+**Questions for later:** Can the user change or remove tags after bookmark creation? Can the user manage the list of tags?
+
+---
+```
 
 ## Boundary Self-Review
 

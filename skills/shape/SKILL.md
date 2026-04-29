@@ -19,7 +19,6 @@ Read only as needed:
 - `references/shaping-actions.md` for possible actions during the shaping loop
 - `references/fit-checks.md` for fit check and macro fit check rules
 - `references/spikes.md` for spike guidance
-- `references/shaping-document-template.md` for the shaping artifact
 
 ## Workflow
 
@@ -50,7 +49,7 @@ Slicing loop
 
 Gate 2: Confirm final slices
   -> User explicitly confirms final slices
-  -> Save shaping document
+  -> Render and save final shaping document
   -> REQUIRED NEXT SKILL: meanpowers:write-spec
 ```
 
@@ -62,12 +61,36 @@ If the user invokes shape on an unstructured conversation, transcript, or docume
 
 ## Setup Artifact
 
-Follow the canonical Meanpowers file-management rules from `meanpowers:use-meanpowers`.
+Follow the canonical Meanpowers file-management rules in `../use-meanpowers/references/file-management.md` from this skill directory.
 
 - Create or select the work item folder.
 - If starting from an inbox item, move it into the work item folder.
-- Create the shaping document from `references/shaping-document-template.md`.
-- Use the canonical shaping filename, such as `010_shaping_short-title.md`.
+- Create the shaping document as a working log named with the canonical shaping filename, such as `010_shaping_short-title.md`.
+- Seed it with this working-log skeleton:
+
+```markdown
+# Shaping: [Title]
+
+## Source
+
+- Originating inbox item:
+- Source conversation/document:
+- Shaping started:
+
+## Working Log
+
+Keep enough context for another agent to continue the shaping process.
+
+Record:
+- baseline findings
+- R/J/S drafts
+- explored shape options
+- fit checks
+- spike notes
+- user decisions
+- open questions
+- current recommended next action
+```
 
 ## Baseline
 
@@ -100,6 +123,8 @@ In each loop:
 
 Working through an action is not linear. Discussion may reveal missing requirements, changed journeys, revised shape components, rejected options, or new shaping actions. Update R/J/S as needed and check that the three facets still make sense together before presenting the full tables again.
 
+During the shaping loop, update the working log in whatever structure best preserves the current reasoning. Keep it optimized for continuation and user review rather than final presentation.
+
 When re-rendering a table after making changes, mark changed or added rows with `CHANGED:` at the start of the changed cell so the user can see what moved.
 
 ## Gate 1: Move To Final Slicing
@@ -111,7 +136,7 @@ Slicing can happen in two modes:
 
 When the user asks to slice, clarify which mode they mean unless it is already obvious from context.
 
-To cross this gate, the user only needs to confirm: "The shape is final."
+To cross this gate, the user only needs to confirm: "The shape is final." After this confirmation, continue the working log with final slice proposals.
 
 ## Slicing Loop
 
@@ -133,6 +158,7 @@ Do not hand off to `meanpowers:write-spec` until the user explicitly confirms th
 
 After confirmation:
 
-- update and save the shaping document
+- render the working log into the final shaping artifact format using `references/final-shaping-document-template.md`
+- save it over the shaping document
 - recap the confirmed slices
 - state `REQUIRED NEXT SKILL: meanpowers:write-spec`

@@ -60,6 +60,8 @@ If Superpowers is missing or not discoverable, warn the user before implementati
 
 Meanpowers artifacts live under `docs/meanpowers`. Follow the canonical naming and movement rules in `references/file-management.md`.
 
+When another Meanpowers skill needs these rules, read `../use-meanpowers/references/file-management.md` from that skill directory.
+
 ## Cross-References
 
 Use skill names, not file paths. Do not force-load another skill file. Use handoff labels only at phase boundaries:

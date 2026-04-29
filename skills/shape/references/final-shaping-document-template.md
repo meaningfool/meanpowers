@@ -118,10 +118,14 @@
 |---|---|---|
 |  |  |  |
 
+## External Reference Notes
+
+- 
+
 ## Handoff To Write-Spec
 
-- Final shape confirmed by user: no
-- Final slices confirmed by user: no
+- Final shape confirmed by user: yes
+- Final slices confirmed by user: yes
 - Slices ready for spec:
 - Open questions for spec:
 

@@ -9,7 +9,7 @@ Spikes are not effort estimates.
 ## File Rules
 
 - Create spikes in the same work item folder as the shaping document.
-- Use the canonical file-management rules from `meanpowers:use-meanpowers`.
+- Use the canonical file-management rules in `../../use-meanpowers/references/file-management.md`.
 - Use a filename such as `010_spike_topic.md`.
 - Use `spike-document-template.md`.
 

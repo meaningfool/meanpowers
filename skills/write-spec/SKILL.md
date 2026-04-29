@@ -155,7 +155,7 @@ Criteria state the intended conditions. Proof approach states how those conditio
 
 ## File Operations
 
-Follow the canonical Meanpowers file-management rules from `meanpowers:use-meanpowers`.
+Follow the canonical Meanpowers file-management rules in `../use-meanpowers/references/file-management.md` from this skill directory.
 
 For this skill:
 - create the next spec file in the selected work item folder
