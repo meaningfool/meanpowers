@@ -1,20 +1,9 @@
 # Shaping Actions
 
-Use these actions inside the main shaping loop. After applying an action, work through the result with the user and update R/J/S until the model is internally consistent.
+Use these actions as prompts during shaping. They help decide what to investigate next, but they do not define a required sequence. Use one action or combine several when that best advances the R/J/S model.
 
-## Refine Requirements
 
-Use when requirements are vague, solution-shaped, missing, or disputed.
-
-- clarify the outcome
-- remove solution details from R
-- split compound requirements
-- mark status changes explicitly
-- check consequences for journeys and shapes
-
-## Generate Alternative Shapes
-
-Use when the current shape feels too narrow or complex.
+## Generate Alternative Shapes or Components
 
 Prompts:
 
@@ -25,40 +14,36 @@ Prompts:
 
 If alternatives involve unfamiliar technology, check primary documentation before leaning on assumptions.
 
-## Refine A Shape Component
-
-Use when a component is flagged or underspecified.
-
-- generate concrete options
-- identify mechanics that need investigation
-- decide whether to spike
-- update requirements and journeys if the component changes the product shape
-
 ## Generate Alternative Journeys
 
-Use when actor responsibilities or workflows are unclear.
+Prompts:
 
-- shift responsibility between actor and system
-- make the journey simpler
-- consider a different actor
-- identify requirements implied by the new journey
+- What parts of the journey may be overly complex? What are our options to simplify them?
+- What would be the simplest version of this journey? 
+- What would it mean to shift some responsibility from the actor to the system or from the system to the actor? Does it unlock new shape directions?
+- What would it mean to prevent the user from having through that journey?
 
 ## Challenge The Baseline
 
-Use when the existing system silently imposes constraints.
+Prompts:
 
-- identify inherited requirements
-- ask whether they still matter
-- surface tradeoffs between keeping, dropping, or changing them
+- How does the current system shape constrains our exploration? 
+- Are these constraints actual requirements? And if so how necessary are they?
+- What new tradeoffs may become available if we were to drop some of these constraints?
 
-## Adversarial Review
+## Run an Adversarial Review
 
-Use when the shape seems converged but may hide assumptions.
+Review the shaping document with fresh eyes looking for:
+- Reasonning/logic gaps
+- Undocumented assumptions about the shape, its components, the actors, the constraints...
+- Intrinsic knowledge is being relied on.
 
-- what gaps are silently filled by assumptions?
-- what intrinsic knowledge is being relied on?
-- which requirements lack a corresponding journey or shape component?
-- which shape components lack a requirement?
+## Run Fit Check
+
+Run a fit check to identify gaps between R, J and S:
+- Which requirements lack a corresponding journey or shape component?
+- Which shape components lack a requirement?
+- Which journey requires a system behaviour that the shape does not fullfil?
 
 ## Slice Early
 

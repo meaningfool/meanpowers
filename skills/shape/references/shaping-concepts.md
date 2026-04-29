@@ -7,22 +7,11 @@ A software product is a system that actors interact with. A system has internal 
 ## Requirements (R)
 
 Requirements describe what is needed, not how it will be implemented.
+- Use IDs such as `R0`, `R1`, and `R2`.
+- Each requirement has a status among: Core goal, Undecided, Must-have, Nice-to-have, Out
+- Good requirement titles are concrete, human-readable assertions in the present tense. Avoid solution-in-disguise requirements.
 
-Use IDs such as `R0`, `R1`, and `R2`.
-
-Recommended statuses:
-
-- Core goal
-- Undecided
-- Leaning yes
-- Leaning no
-- Must-have
-- Nice-to-have
-- Out
-
-Good requirement titles are concrete, human-readable assertions in the present tense. Avoid solution-in-disguise requirements.
-
-Example:
+Diplay R using the following format:
 
 ```markdown
 | ID | Requirement | Status | Notes |
@@ -34,12 +23,10 @@ Example:
 ## Journeys (J)
 
 Journeys describe actor interactions with the system.
+- Use IDs such as `J1`, `J1.1`, and `J2`.
+- Good journey titles lead with a verb, identify the actor, and avoid jargon.
 
-Use IDs such as `J1`, `J1.1`, and `J2`.
-
-Good journey titles lead with a verb, identify the actor, and avoid jargon.
-
-Example:
+Diplay J using the following format:
 
 ```markdown
 | ID | Journey / Step | Actor | Description |
@@ -50,7 +37,9 @@ Example:
 
 ## Shapes (S)
 
-Shapes are solution options or selected system forms. Letters represent mutually exclusive top-level shape options. Numbered IDs represent components.
+Shapes are solution options or selected system forms. 
+- Letters represent mutually exclusive top-level shape options. 
+- Numbered IDs represent components.
 
 Examples:
 
@@ -58,7 +47,8 @@ Examples:
 - `A1`, `A2`: components of Shape A
 - `A2-A`, `A2-B`: alternative approaches to component A2
 
-Example:
+
+Diplay S using the following format:
 
 ```markdown
 | ID | Shape | Summary | Status |
@@ -66,6 +56,9 @@ Example:
 | A | Server-side filtering | Filtering happens in the backend. | Candidate |
 | B | Client-side filtering | Filtering happens in the browser. | Rejected |
 ```
+
+
+Display a specific shape using the following format: 
 
 ```markdown
 | ID | Component | Flag | Notes |
@@ -92,9 +85,3 @@ Better:
 R17: Only authenticated users can access full articles
 A3: Clerk authentication workflow
 ```
-
-## Slicing
-
-A vertical slice introduces an observable behavior or journey change and can be demonstrated. A horizontal slice only changes internals.
-
-Prefer vertical slices. Horizontal slices are acceptable when the work is a pure refactoring or when a technical intermediate state still produces a demoable output.

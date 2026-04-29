@@ -5,36 +5,52 @@ description: Use when a Meanpowers inbox item or proposed change is vague, large
 
 # Shaping
 
-Shape is for converging from vague or large work toward a confirmed product and system direction. It is collaborative and iterative.
+`meanpowers:shape` core principle is that vague / large scopes of work are best refined by exploring together the problem and the potential solutions through an iterative process. 
 
-This skill is inspired by Ryan Singer's shaping methodology and Ryan's own shaping skill work: [shaping-skills](https://github.com/rjs/shaping-skills/tree/main) and [shaping](https://github.com/rjs/shaping-skills/tree/main/shaping).
+`meanpowers:shape` takes an `inbox` item, a document or a discussion as input and produces a validated shaping document and final slices ready for `meanpowers:write-spec` as output. 
 
-Shape produces a validated shaping document and final slices ready for `meanpowers:write-spec`. It does not produce formal acceptance gates, implementation tasks, specs, or plans.
+## Core Concepts
+
+Shaping is an iterative problem/solution exploration that progressively populates and refines three connected facets:
+
+- Requirements (R): outcomes, constraints, and qualities. Requirements describe what is expected be true, not how to implement it.
+- Journeys (J): successions of interactions between an actor and the system that lead to an actor's expected output. Multiple types of actors may interact with the system, and each have multiple different journeys (depending on the use cases or the context)
+- Shapes (S): possible concrete system forms, and their components.
+
+R/J/S start empty. The goal is to progressively fill and refine R/J/S to the point they are coherent, specific, and mutually consistent. Requirements should not hide solution choices. Shape components should trace back to requirements, journeys, constraints, or explicit user choices. 
+
+Read about R/J/S conventions in `references/shaping-concepts.md` before getting started.
 
 ## References
 
 Read only as needed:
 
-- `references/shaping-concepts.md` for requirements, journeys, shapes, behavior, and slicing concepts
 - `references/shaping-actions.md` for possible actions during the shaping loop
 - `references/fit-checks.md` for fit check and macro fit check rules
 - `references/spikes.md` for spike guidance
 
+## Setup Artifact
+
+Follow the canonical Meanpowers file-management rules in `../use-meanpowers/references/file-management.md`.
+
+- Create or select the work item folder.
+- If starting from an inbox item, move it into the work item folder.
+- Create the shaping document named with the canonical shaping filename, such as `010_shaping_short-title.md`.
+
+
 ## Workflow
 
 ```text
-Input
-  -> Setup artifact
-  -> Establish baseline
-  -> Seed R/J/S
+
+  -> Sort intake
 
 Main shaping loop
-  -> Choose next shaping action
-  -> Apply the action
-  -> Work through the result with the user, updating R/J/S until the model is internally consistent
-  -> Render full R/J/S tables
-  -> Run or update fit check when useful
-  -> Examine what to do next and repeat until shape converges
+  -> Choose the next investigation step that most improves the R/J/S model
+  -> Use shaping actions as prompts or techniques when useful
+  -> Work through the result with the user
+  -> Update the working log and any affected R/J/S tables
+  -> Identify the next useful question, research task, fit check, spike, or convergence point
+  -> Repeat until the shape converges
 
 Gate 1: Move to final slicing
   -> If slicing is requested, clarify exploratory vs final unless obvious
@@ -53,92 +69,61 @@ Gate 2: Confirm final slices
   -> REQUIRED NEXT SKILL: meanpowers:write-spec
 ```
 
-## Start
+## Intake Sorting
 
-Shape expects a Meanpowers inbox item or a clearly proposed change as input.
+- Sort the provided input into the facets it already contains:
+  - goals
+  - journey expectations
+  - shape expectations
+  - constraints
+  - non-goals
+  - uncertainties
+- Present that to the user
 
-If the user invokes shape on an unstructured conversation, transcript, or document, suggest `meanpowers:capture` first. If the user declines, use the conversation as the input and keep the scope explicit.
+Note: 
+- Use this as a readback of the starting material. Be truthful to what is stated and what is not. Don't infer, or guess. 
+- The first useful step may be to ask interpretation questions, explore a source-provided shape, extract requirements, generate alternative journeys, challenge the baseline, or run a fit check.
 
-## Setup Artifact
+## Shaping Loop
 
-Follow the canonical Meanpowers file-management rules in `../use-meanpowers/references/file-management.md` from this skill directory.
+Keep going through the loop until, one of those 2 conditions is met:
+1. You believe R/J/S are highly consistent and S is "final" in your opinion. Then ask the user if he agrees. 
+2. The user tells you to move to slicing. Ask for confirmation that the user consider S final.
 
-- Create or select the work item folder.
-- If starting from an inbox item, move it into the work item folder.
-- Create the shaping document as a working log named with the canonical shaping filename, such as `010_shaping_short-title.md`.
-- Seed it with this working-log skeleton:
+What you may do at any moment:
+1. `Ask the user a clarifying question`. Ask one at a time
+2. `Research the codebase` for additional insights. If a question may be answered by researching the codebase, start by researching the codebase.
+3. `Research on the internet`. Even if you think you know about a technology, always confirm through a search. Besides good research is a source of opportunities, it may lead to new alternative shape ideas.
+4. `Suggest a refinement` to R, J or S (add/remove/split/merge/edit/... items). Ask for confirmation before acting.
 
-```markdown
-# Shaping: [Title]
+What you may suggest to the user (wait for confirmation before running):
+1. `Generate alternative shapes or components` when the current shape feels too narrow or complex
+2. `Generate alternative journeys` when the current journeys seem unintuitive.
+3. `Run a spike` when there is uncertainty about mechanics, feasibility, or existing system behavior
+4. `Challenge the baseline` when the existing system silently imposes constraints that could be revisited.
+5. `Run an adversarial review` when shaping is quite advanced but may rely on hidden assumptions.
+6. `Run a Fit Check` to identify gap between R, J, and S.
+7. `Slicing dry run` may expose hidden tradeoffs or excessive scope.
 
-## Source
+At any moment the user may 
+- Provide feedback. Always process that first. Prioritize over anything else. 
+- Request a specific shaping action.
 
-- Originating inbox item:
-- Source conversation/document:
-- Shaping started:
 
-## Working Log
+When a decision has been made regarding a modification of R, J or S, always return the modified table in full. Mark changed or added rows with `CHANGED:` at the start of the changed cell.
+Update the working log when decisions are made.
 
-Keep enough context for another agent to continue the shaping process.
 
-Record:
-- baseline findings
-- R/J/S drafts
-- explored shape options
-- fit checks
-- spike notes
-- user decisions
-- open questions
-- current recommended next action
-```
+Use `references/shaping-actions.md` for available shaping actions.
 
-## Baseline
 
-Gather only the baseline needed to reason about impacted behavior, journeys, and components:
-
-- impacted actor journeys and current journey steps
-- impacted observable system behaviors
-- relevant current components and internal constraints
-
-## Seed R/J/S
-
-Create first versions of:
-
-- R: requirements
-- J: journeys
-- S: shape options and components
-
-Render complete tables when presenting them to the user. Do not summarize away rows that are part of the working model.
-
-## Main Shaping Loop
-
-In each loop:
-
-1. Choose the next shaping action.
-2. Apply the action.
-3. Work through the result with the user, updating R/J/S until the model is internally consistent.
-4. Render full updated R/J/S tables.
-5. Run or update a fit check when comparing shape options.
-6. Examine what to do next and repeat until shape converges.
-
-Working through an action is not linear. Discussion may reveal missing requirements, changed journeys, revised shape components, rejected options, or new shaping actions. Update R/J/S as needed and check that the three facets still make sense together before presenting the full tables again.
-
-During the shaping loop, update the working log in whatever structure best preserves the current reasoning. Keep it optimized for continuation and user review rather than final presentation.
-
-When re-rendering a table after making changes, mark changed or added rows with `CHANGED:` at the start of the changed cell so the user can see what moved.
-
-## Gate 1: Move To Final Slicing
-
-Slicing can happen in two modes:
-
-- Exploratory slicing: a shaping action inside the main loop.
-- Final slicing: the confirmed slice set that will be handed to `meanpowers:write-spec`.
-
-When the user asks to slice, clarify which mode they mean unless it is already obvious from context.
-
-To cross this gate, the user only needs to confirm: "The shape is final." After this confirmation, continue the working log with final slice proposals.
 
 ## Slicing Loop
+
+
+A vertical slice introduces an observable behavior or journey change and can be demonstrated. A horizontal slice only changes internals.
+
+Prefer vertical slices. Horizontal slices are acceptable when the work is a pure refactoring or when a technical intermediate state still produces a demoable output.
 
 Create the smallest useful vertical slices. A vertical slice introduces an observable behavior or journey change and can be demonstrated:
 - Slice vertically into slices way, way smaller than you otherwise would. Like, 10x smaller.
