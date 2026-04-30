@@ -84,9 +84,9 @@ Note:
 - Use this as a readback of the starting material. Be truthful to what is stated and what is not. Don't infer, or guess. 
 - The first useful step may be to ask interpretation questions, explore a source-provided shape, extract requirements, generate alternative journeys, challenge the baseline, or run a fit check.
 
-## Shaping Loop
+## Shaping
 
-Keep going through the loop until, one of those 2 conditions is met:
+Shaping is a exploration / investigation loop: keep going until one of those 2 exit conditions is met:
 1. You believe R/J/S are highly consistent and S is "final" in your opinion. Then ask the user if he agrees. 
 2. The user tells you to move to slicing. Ask for confirmation that the user consider S final.
 
@@ -103,46 +103,51 @@ What you may suggest to the user (wait for confirmation before running):
 4. `Challenge the baseline` when the existing system silently imposes constraints that could be revisited.
 5. `Run an adversarial review` when shaping is quite advanced but may rely on hidden assumptions.
 6. `Run a Fit Check` to identify gap between R, J, and S.
-7. `Slicing dry run` may expose hidden tradeoffs or excessive scope.
+7. `Do a slicing dry run`, it may expose hidden tradeoffs or excessive scope.
+8. Any other course of action that you identify as the best next action in this exploration.
 
 At any moment the user may 
 - Provide feedback. Always process that first. Prioritize over anything else. 
+- Ask you do display the R/J/S tables
 - Request a specific shaping action.
 
-
-When a decision has been made regarding a modification of R, J or S, always return the modified table in full. Mark changed or added rows with `CHANGED:` at the start of the changed cell.
-Update the working log when decisions are made.
+Mandatory actions:
+- When a decision has been made regarding a modification of R, J or S, always return the modified table in full. Mark changed or added rows with `CHANGED:` at the start of the changed cell.
+- When important shaping decisions are made (tradeoff, directions,...), update the working log when decisions are made.
 
 
 Use `references/shaping-actions.md` for available shaping actions.
 
+## Confirm final shape
 
+- Before exiting the shaping phase, display R / J / S in full.
+- Ask for the user confirmation that the shape is final.
+- If not keep the shaping going.
 
-## Slicing Loop
+## Slicing
 
-
+**Definition:**
 A vertical slice introduces an observable behavior or journey change and can be demonstrated. A horizontal slice only changes internals.
 
-Prefer vertical slices. Horizontal slices are acceptable when the work is a pure refactoring or when a technical intermediate state still produces a demoable output.
+**Process:**
+1. Slice vertically into slices way, way smaller than you otherwise would. Like, 10x smaller.
+2. Try to identify multiple slicing logics. If you identify more than 1, submit the options to the user.
+3. Show the slices to the user.
+4. Process the user feedback and rework the slices with the user until they are satisfied.
 
-Create the smallest useful vertical slices. A vertical slice introduces an observable behavior or journey change and can be demonstrated:
-- Slice vertically into slices way, way smaller than you otherwise would. Like, 10x smaller.
-- When a small behavioural change still requires a significant amount of change in the system (e.g. adding a mobile native app), you may create intermediate slices that are mostly technical, as long as those slices produce a demoable output (e.g. a first slice with a mobile app that displays "Hello World", followed by slices integrating the UI and the data by chunks up to the point where it is actually usable)
+**Notes:**
+- When a small behavioural change still requires a significant amount of change in the system (e.g. adding a mobile native app), you may create intermediate slices that are mostly technical, as long as those slices produce a demoable output. To do that you may introduce transient UI elements that allow to demo the evolving system behavior (e.g. a first slice with a mobile app that displays "Hello World", followed by slices integrating the UI and the data by chunks up to the point where it is actually usable). 
 
+**How to display a slice:**
 For each slice, include:
 - behavioral or journey delta
 - included shape components
-- demo scenario
+- `demo scenario`: describes the concrete scenario that we expect to be demonstrable after the slice.
 - notes for `meanpowers:write-spec`
 
-`demo scenario` describes the concrete scenario that we expect to be demonstrable after the slice.
+## Confirm Final Slices
 
-## Gate 2: Confirm Final Slices
-
-Do not hand off to `meanpowers:write-spec` until the user explicitly confirms the final slices.
-
-After confirmation:
-
+After confirmation by the user that slices are final:
 - render the working log into the final shaping artifact format using `references/final-shaping-document-template.md`
 - save it over the shaping document
 - recap the confirmed slices
