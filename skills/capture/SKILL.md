@@ -25,14 +25,32 @@ INB-0001_short-title.md
 2. Gather the context needed to understand item boundaries, by reading project files.
 3. Extract candidate changes.
 4. Split unrelated changes and keep tightly coupled changes together.
-5. Ask immediate questions only when the answer changes how items should be split.
-6. Present the proposed item list to the user.
-7. Revise the list until the user approves it.
-8. Write one inbox file per approved item.
+5. If several paths are alternative ways to achieve the same outcome, capture 1 umbrella item and move the path options into `Questions for later`.
+6. Ask immediate questions only when the answer changes how items should be split.
+7. Present the proposed item list to the user.
+8. Revise the list until the user approves it.
+9. Write one inbox file per approved item.
 
 <HARD-GATE>
 Do not write inbox files until the user has approved the proposed item list.
 </HARD-GATE>
+
+## Boundary Rules
+
+Use 1 umbrella item when:
+
+- the source is asking 1 product, research, or evaluation question and lists multiple possible ways to answer it
+- several paths could be chosen later without changing the underlying intent
+- a staged experiment is exploratory and later stages depend on what earlier stages reveal
+- provider choices, hosting choices, or implementation strategies are still options rather than committed work
+
+Split into separate items only when:
+
+- the source clearly commits to multiple independent changes, not just multiple options
+- each item could be approved, shaped, and specified independently if the others were dropped
+- the items would still make sense as separate work if different people implemented them
+
+When unsure, ask 1 boundary question: "Do you want one umbrella item for this question, or separate execution-track items?"
 
 ## Item Format
 
@@ -76,10 +94,20 @@ Before presenting the item list, check:
 
 - Are unrelated changes split?
 - Are tightly coupled changes kept together?
+- Are alternative implementation paths grouped under 1 umbrella item when they serve the same intent?
+- Did capture avoid turning options, stages, or provider choices into separate items too early?
 - Is each item understandable without the original conversation?
 - Did capture avoid spec, design, acceptance-gate, and planning detail?
 
 If the review changes the item boundaries, update the list before presenting it.
+
+## Research-Style Inputs
+
+If the source material is exploratory, default to the smallest set of items that preserves the actual decision surface.
+
+- Capture the durable product question or requested outcome as the item.
+- Put candidate approaches, trial order, and path-specific hypotheses into `Questions for later`.
+- Only split once the source commits to multiple independent workstreams.
 
 ## Writing Inbox Files
 

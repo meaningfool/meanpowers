@@ -82,29 +82,49 @@
 
 ## Final Slices
 
-| ID | Slice | Behavioral / Journey Delta | Components | Status |
-|---|---|---|---|---|
-| V1 |  |  | A1, A2 | Confirmed |
-| V2 |  |  | A3 | Confirmed |
+### Selected Slicing Logic
+
+**Rationale:**
+
+[Explain the tradeoff this slicing optimizes for.]
+
+**Sequence:**
+
+[Explain how the sequence implements the rationale.]
+
+**Demo scenario:**
+
+[Describe if applicable. If not applicable, describe how success and completenss is verified]
+
+**Notes for `meanpowers:write-spec`:**
+
+- 
+
+**Map:**
+[Add as many slice columns as needed: V1, V2, V3, ...]
+
+| Component | V1 | V2 | ... |
+|---|---:|---:|---:|
+| A1 | X |  |  |
+| A2 | X |  |  |
+| A3 |  | X |  |
+
 
 ### V1: [Slice Name]
 
-**Behavioral / journey delta:**
+**State after this slice:**
 
-[What becomes observable or demoable after this slice.]
+[Describe the system state once this slice is complete.]
 
 **Included components:**
 
 - A1:
 - A2:
 
-**Demo Behavior:**
-
-[Concrete behavior or journey change that should be demonstrable after this slice.]
-
 **Notes for write-spec:**
 
-- 
+- ...
+- ...
 
 ## Spikes
 

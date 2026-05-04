@@ -6,12 +6,44 @@ A software product is a system that actors interact with. A system has internal 
 
 ## Requirements (R)
 
+**Instructions:**
 Requirements describe what is needed, not how it will be implemented.
 - Use IDs such as `R0`, `R1`, and `R2`.
 - Each requirement has a status among: Core goal, Undecided, Must-have, Nice-to-have, Out
-- Good requirement titles are concrete, human-readable assertions in the present tense. Avoid solution-in-disguise requirements.
+- Good requirement titles are concrete, human-readable assertions in the present tense.
+- Avoid solution-in-disguise requirements.
+- Do not put preferences, process gates, migration-cost preferences, or user trade-off rules into `R` unless they are restated as truths about the finished system.
+- Prefer positive requirement phrasing.
+- When the real intent is to exclude a capability, express the capability positively and mark its status as `Out` rather than writing a negative requirement.
+- Keep negative phrasing only when the prohibition is itself the requirement, such as security, privacy, safety, or compliance rules.
 
-Diplay R using the following format:
+**Phrasing guidance:**
+
+Bad:
+```text
+R3: Independent browser sessions do not require shared cross-session coordination
+R4: The system does not persist session state across reconnects
+```
+
+Better when the capability is intentionally excluded:
+```text
+R3: The hosted system coordinates state across browser sessions | Out
+R4: Session state survives reconnects | Out
+```
+
+Better when independence is itself the desired system property:
+```text
+R3: Each browser session is handled independently | Must-have
+```
+
+Valid negative requirement when the prohibition is the behavior:
+```text
+R5: Audio recordings are not retained after session end | Must-have
+```
+
+**How to diplay R:**
+
+Use the following format:
 
 ```markdown
 | ID | Requirement | Status | Notes |
