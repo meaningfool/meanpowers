@@ -13,17 +13,20 @@ description: Use when a Meanpowers inbox item or proposed change is vague, large
 
 Shaping is an iterative problem/solution exploration that progressively populates and refines three connected facets:
 
-- Requirements (R): outcomes, constraints, and qualities. Requirements describe what is expected be true, not how to implement it.
-- Journeys (J): successions of interactions between an actor and the system that lead to an actor's expected output. Multiple types of actors may interact with the system, and each have multiple different journeys (depending on the use cases or the context)
-- Shapes (S): possible concrete system forms, and their components.
+- `Requirements` (R): outcomes, constraints, and qualities. Requirements describe what is expected be true, not how to implement it.
+- `Shapes` (S): possible concrete system forms, and their components.
 
-R/J/S start empty. The goal is to progressively fill and refine R/J/S to the point they are coherent, specific, and mutually consistent. Requirements should not hide solution choices. Shape components should trace back to requirements, journeys, constraints, or explicit user choices. 
+R and S start empty. The goal is to progressively fill and refine R/S to the point they are coherent, specific, and mutually consistent. 
+
+Other concepts: 
+- `Context Log`: a place to track other important considerations that are not part of R or S.
+- `Journeys`: the description of the user journeys associated with a specific shape. 
 
 Litmus test for `R`:
 - If the statement can be checked by looking at the finished system's behavior, capability, or externally visible quality, it may belong in `R`.
-- If the statement explains how to choose among solutions, what tradeoff to prefer, what complexity to avoid, or what proof is required before committing, it does not belong in `R` as written.
+- If the statement explains how to choose among solutions, what tradeoff to prefer, what complexity to avoid, or what proof is required before committing, it belongs to the `Context Log`.
 
-Read about R/J/S conventions in `references/shaping-concepts.md` before getting started.
+Read about R/S conventions in `references/shaping-concepts.md` before getting started.
 
 ## Setup Artifact
 
@@ -40,104 +43,156 @@ Follow the canonical Meanpowers file-management rules in `../use-meanpowers/refe
 
 Input
   -> Setup working log
-  -> Sort intake
+  -> Compress the problem
+  -> Sort the intake
   -> Shape
   -> Slice
   
 ```
 
-## Intake Sorting
+## Compress the problem
+
+**Process:**
+- Compress the problem
+- Verify the problem statement with the user 
+- Iterate until agreement
 
 **Compress the problem:**
-Extract from the input:
-  - goals
-  - journey expectations
-  - shape expectations
-  - constraints
-  - non-goals
-  - uncertainties
+- Restate the problem as a single sentence using the template: `How might we [do X]?`
+- Avoid verbs like `explore`, `decide`, `shape` that qualify what we might `do` and instead directly state what `do` is. The shaping process is about identifying different ways to `do` X, which will help `decide` what we actually want to do.
+- Good `How might we host this app on the edge?` / Bad: `How might we explore edge hosting options for this app?`
+- Good: `How might we prevent the user from entering their payment details multiple times?` / Bad: `How might we decide which of [option A], [option B] we prefer to prevent users from entering their payment details multiple times`
 
-Be truthful to what is stated and what is not. Don't infer, or guess. 
+## Sort the intake
 
-**Present that to the user:**
+The intake may be lengthy containing both important information and noise regarding the expected shape and requirements, as well as the shaping process itself. 
 
-Present the intake sorting in this format:
+**Process:**
+- Semantic triaging: triage assertions, expectations, preferences... expressed by the user in the intake
+- Clarification: clarify with the user what they meant
+- Presentation: present to the user
+
+**Semantic triaging:**
+- Extract a list of `semantically distinct points` in the intake, together with a `type`, an `object` and an estimated `importance`.
+- `type`: in [`expectation`, `uncertainty`, `preference`, `constraint`, `risk`, `other`]
+- `object`: in [`meta` if the point is about the shaping process, `shape` if the point if about the solution]
+- `importance`: in [`high`, `low`]
+- Order the list by descending importance.
+
+**Clarification:**
+For each point:
+- Skip it if it was already clarified by earlier questions.
+- Clarify or verify with the user what their intention was. 
+- If the point may qualify as a requirement, verify with the user if you should add it to R.
+- Otherwise decide if it's worth tracking in the `Context Log`, or just discarded as noise. 
+- `decision`: in [`requirement`, `context_log`, `noise`]
+
+**Presentation:**
+- Present the semantic points to the user
+- Ask if you can start the shaping process
 
 ```markdown
 
-**INTAKE READBACK**
+## Semantic triaging
 
-**Goals**
-
-- [Only goals stated or directly implied by the input.]
-- If none: None stated.
-
-**Journey Expectations**
-
-- [Expected actor journeys, workflows, or use cases.]
-- If none: None stated.
-
-**Shape Expectations**
-
-- [Expected solution directions, platforms, architectures, components, or implementation shapes.]
-- If none: None stated.
-
-**Constraints**
-
-- [Boundaries, compatibility needs, policies, costs, deadlines, technical constraints.]
-- If none: None stated.
-
-**Non-Goals**
-
-- [Things the input excludes or deprioritizes.]
-- If none: None stated.
-
-**Uncertainties**
-
-- [Questions, unknowns, risks, ambiguities, or suspected blockers.]
-- If none: None stated.
-
-**Empty Starting Model**
-
-R/J/S are currently empty. The intake readback is not the shaped solution.
-
-**Suggested First Step**
-
-[Propose one next step: a clarifying question, codebase research, external research, or a specific shaping action.]
+| Point | `type` | `object` | `importance` |
+|---|---|---|---|
+| [Short factual statement extracted from the intake.] | expectation \| uncertainty \| preference \| constraint \| risk \| other | meta \| shape | high \| low |
+| [Repeat for each semantically distinct point.] |  |  |  |
 
 ```
 
+
 ## Shaping
 
-IMPORTANT: shaping is an iterative and collaborative process. You are not allowed to change alter R/J/S without consulting with the user.
+**Process:**
+1. Ideation: generate 5-8 shape options
+2. Clarification: run a clarification action
+3. Follow through: follow through with the consequences of the newly gathered insights.
+4. Termination: decide if a termination condition is met or go back to 2
+5. Adversarial review
 
-Shaping is a exploration / investigation loop: keep going until one of those 2 exit conditions is met:
-1. You believe R/J/S are highly consistent and S is "final" in your opinion. Then ask the user if he agrees. 
-2. The user tells you to move to slicing. Ask for confirmation that the user consider S final.
+**Your role:**
+1. You proactively guide the user through the process with suggestions and feedback.
+2. You detect potential new requirements.
+3. You capture changes to R / S / Context Log (IMPORTANT: always ask for user confirmation before changing any of the artefacts).
+4. You collect evidence through research 
 
-Actions you may run autonomously at any moment:
-1. `Ask the user a clarifying question`. Ask one at a time
-2. `Research the codebase` for additional insights. If a question may be answered by researching the codebase, start by researching the codebase.
-3. `Research on the internet`. Even if you think you know about a technology, always confirm through a search. Besides good research is a source of opportunities, it may lead to new alternative shape ideas.
-4. `Suggest a refinement` to R, J or S (add/remove/split/merge/edit/... items). Ask for confirmation before acting.
-
-Actions you may suggest to the user, and run only once you have confirmation (mandatory read: `references/shaping-actions.md` for additional details):
-1. `Generate alternative shapes or components` when the current shape feels too narrow or complex
-2. `Generate alternative journeys` when the current journeys seem unintuitive.
-3. `Run a spike` when there is uncertainty about mechanics, feasibility, or existing system behavior
-4. `Challenge the baseline` when the existing system silently imposes constraints that could be revisited.
-5. `Run an adversarial review` when shaping is quite advanced but may rely on hidden assumptions.
-6. `Run a Fit Check` to identify gap between R, J, and S.
-7. Any other course of action that you identify as the best next action in this exploration.
-
-At any moment the user may 
-- Provide feedback. Always process that first. Prioritize over anything else. 
-- Ask you do display the R/J/S tables
-- Request a specific shaping action.
 
 Mandatory actions:
-- When a decision has been made regarding a modification of R, J or S, always return the modified table in full. Mark changed or added rows with `CHANGED:` at the start of the changed cell.
+- When a decision has been made regarding a modification of R or S, always return the modified table in full. Mark changed or added rows with `CHANGED:` at the start of the changed cell.
 - When important shaping decisions are made (tradeoff, directions,...), update the working log when decisions are made.
+
+### Ideation
+
+We want to prevent premature convergence by generating a large set of diverse options from the beginning. 
+
+**Process:**
+1. Generation-lowTemp: generate 5+ options with low temperature techniques.
+2. Generation-highTemp: generate 2+ options with high temperature techniques.
+3. Collapse: collapse similar options into its most distinctive version
+4. Selection: select a set of 5-8 options that capture the best the diversity generated. 
+
+**Generation-lowTemp:**
+- Prompts: 
+  - Inversion: "What if we did the opposite?
+  - Constraint removal: "What if budget/time/tech weren't factors?"
+  - Audience shift: "What if this were for [different user]?"
+  - Combination: "What if we merged this with [adjacent idea]?"
+  - Simplification: "What's the version that's 10x simpler?"
+  - 10x version: "What would this look like at massive scale?"
+  - Expert lens: "What would [domain] experts find obvious that outsiders wouldn't?"
+- Consider any option that the user previously mentioned / requested
+- Search queries compatible with the stated problem / current baseline
+
+**Generation-highTemp:**
+- Challenge the baseline
+- Search queries that ignore or contradict some aspects of the stated problem / current baseline.
+
+**Collapse:**
+- Inspect similar options together
+- Can
+TODO 
+
+### Clarification
+
+**Process:**
+1. List and rank sources of uncertainty.
+2. Choose an action to clarify the highest ranking source of uncertainty 
+
+**List and rank sources of uncertainty:**
+TODO
+
+**Choose an action:**
+1. `Ask the user a clarifying question`. Ask one at a time
+2. `Research the codebase`
+3. `Research on the internet`
+4. `Run a spike` when there is uncertainty about mechanics, feasibility, or existing system behavior
+
+
+### Follow through
+
+**Process:**
+1. Follow-up actions
+2. Suggest a refinement to R/S
+2. What are the consequences? 
+2. If change in shape -> new journey?
+2. Does it reveal any new option / gap / uncertainty / potential requirement?
+
+### Termination
+
+Terminate the Shaping phase if one of those 2 exit conditions is met:
+1. You believe R/S are highly consistent and S is "final" in your opinion. Then ask the user if he agrees. 
+2. The user tells you to move to slicing. Ask for confirmation that the user consider S final.
+
+### Adversarial review
+
+5. `Run an adversarial review` when shaping is quite advanced but may rely on hidden assumptions.
+6. `Run a Fit Check` to identify gap between R, J, and S.
+4. `Challenge the baseline` when the existing system silently imposes constraints that could be revisited.
+
+
+
 
 ## Confirm final shape
 

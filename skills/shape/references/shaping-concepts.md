@@ -52,21 +52,6 @@ Use the following format:
 | R1 | State survives page refresh | Must-have | |
 ```
 
-## Journeys (J)
-
-Journeys describe actor interactions with the system.
-- Use IDs such as `J1`, `J1.1`, and `J2`.
-- Good journey titles lead with a verb, identify the actor, and avoid jargon.
-
-Diplay J using the following format:
-
-```markdown
-| ID | Journey / Step | Actor | Description |
-|---|---|---|---|
-| J1 | Create a report | back-office user | User creates a report from selected data. |
-| J1.1 | Choose report inputs | back-office user | User selects the data range and filters. |
-```
-
 ## Shapes (S)
 
 Shapes are solution options or selected system forms. 
@@ -101,19 +86,50 @@ Display a specific shape using the following format:
 
 Use `WARNING` in component flags when the what is known but the how is still uncertain.
 
-## Avoid Tautologies Between R And S
+## Is a required solution part of R or S
 
-Requirements state outcomes. Shapes describe solutions.
+If the user states: "We will use Cleck authentication" is it:
+- An actual requirement?
+- A research direction with regards to the possible shapes?
 
-Bad:
+Both are possible, and deciding requires clarifying with the user. Do they want:
 
 ```text
 R17: Use Clerk for authentication
 ```
 
-Better:
+Or:
 
 ```text
 R17: Only authenticated users can access full articles
-A3: Clerk authentication workflow
+[with Clerk considered as one of the shapes/components]
+```
+
+## Context Log
+
+The `Context Log` serves as a place to collect important points made by the user that are not R nor S.
+
+```markdown
+
+## Context Log
+
+| Point | `type` | `object` | `importance` |
+|---|---|---|---|
+| [Short factual statement] | expectation \| uncertainty \| preference \| constraint \| risk \| other | meta \| shape | high \| low |
+
+```
+
+## Journeys (J)
+
+Journeys describe actor interactions with the system. They are inferred base on the shape. 
+- Use IDs such as `J1`, `J1.1`, and `J2`.
+- Good journey titles lead with a verb, identify the actor, and avoid jargon.
+
+Diplay J using the following format:
+
+```markdown
+| ID | Journey / Step | Actor | Description |
+|---|---|---|---|
+| J1 | Create a report | back-office user | User creates a report from selected data. |
+| J1.1 | Choose report inputs | back-office user | User selects the data range and filters. |
 ```
