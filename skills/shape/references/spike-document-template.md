@@ -31,4 +31,4 @@
 
 ## Shape Impact
 
-[Explain what changed in the requirements, journeys, shapes, or decisions because of this spike.]
+[Explain what changed in the requirements, derived actor journeys, shapes, or decisions because of this spike.]

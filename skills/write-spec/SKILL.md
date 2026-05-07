@@ -32,6 +32,7 @@ If the user points to a Meanpowers shaping document, clarify which slice, work i
 - `Acceptance Gate`: a blocking completion checkpoint for a slice. If a gate fails or is not run, that slice is not complete.
 - `Acceptance Criterion`: one concrete condition inside a gate. It describes what must be true from the perspective of a user, operator, external system, API consumer, or maintainer.
 - `Acceptance Proof`: the runnable or inspectable evidence that proves the criterion.
+- `Independent Blocking Outcome`: a distinct result whose failure would independently make the slice incomplete. Use this to decide whether a slice needs one gate or multiple gates.
 - `Supporting Verification`: useful checks that improve implementation confidence but do not define done.
 
 Use `references/acceptance-gates.md` for gate, criterion, proof, and example guidance.
@@ -111,20 +112,32 @@ The behavioral delta says what becomes different after this slice. For user-faci
 
 **Agent work:**
 - Use `references/acceptance-gates.md` while writing gates.
-- Define acceptance gates for each slice.
-- Define enough gates to prove the slice is complete, but avoid turning supporting checks into gates.
+- For each slice, first identify the independent blocking outcomes.
+- Use the minimum number of gates needed to express those outcomes.
+- If two candidate gates would normally pass or fail together for the same outcome, merge them into one gate with multiple criteria.
+- For refactor or architecture slices, start with one gate named after the preserved or changed system behavior. Split only when the slice has multiple independent failure modes or multiple actors with distinct done conditions.
+- Keep supporting verification out of acceptance gates.
 
 Each gate must include:
-- why the gate matters
-- criteria that state what must be true
-- proof approach, such as browser, CLI, backend test, integration test, replay, static inspection, live validation, or manual procedure
-- expected evidence the agent must produce before claiming completion
+- `Why this gate matters`: why this outcome blocks completion
+- `Criteria`: plain-language statements of what must be true
+- `Proof`: concrete setup, action, and assertions that prove the criteria
+- `Expected evidence`: what the implementation agent must report before claiming completion
 
-Criteria state the intended conditions. Proof approach states how those conditions can be proven. `meanpowers:write-plan` later turns proof approaches into exact commands or procedures.
+Criteria rules:
+- Lead with behavior visible to a user, operator, external system, API consumer, or maintainer.
+- Name message types, module names, protocol calls, or test helpers only when the criterion itself is technical or architectural.
+- Do not write criteria as test descriptions, implementation steps, or vague claims such as "X works" or "tests pass".
+
+Proof rules:
+- A proof label alone is insufficient. Do not stop at phrases like "backend acceptance test", "browser validation", or "static inspection".
+- Specify what drives the system, what is real versus faked, and what exact sequence, state, or output is asserted.
+- Write proofs concretely enough that `meanpowers:write-plan` can derive exact commands or procedures without inventing missing structure.
 
 **User interaction:**
 - Ask targeted questions only when a criterion cannot be made concrete.
 - Present gates for validation before moving to supporting verification.
+- If the user could reasonably mistake gates for sequential work units, clarify that gates are proofs of slice completion, not phases of implementation.
 
 ### 6. Define Supporting Verification
 
@@ -140,9 +153,16 @@ Criteria state the intended conditions. Proof approach states how those conditio
 
 ### 7. Self-Review
 
+### 7. Self-Review
+
 **Agent work:**
 - Run an adversarial self-review against the spec before presenting it.
-- Check especially for vague target language, missing non-goals, missing constraints, weak gates, missing proof approaches, placeholders, and implementation task steps.
+- Check especially for vague target language, missing non-goals, missing constraints, weak gates, missing proof details, placeholders, and implementation task steps.
+- Ask:
+  - Could a reader mistake these gates for sequential units of work rather than proofs of slice completion?
+  - Does each gate describe an independent blocking outcome rather than one proof dimension of the same outcome?
+  - Does each criterion describe system behavior or a structural contract, rather than test structure?
+  - Could `meanpowers:write-plan` turn each proof into exact commands or procedures without guessing?
 - Fix issues inline before presenting the spec.
 
 ### 8. Present Final Spec For Approval

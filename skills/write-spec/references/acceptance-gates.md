@@ -15,6 +15,41 @@ Acceptance gates translate intent into feedback an implementation agent can use.
 
 `Target System` is the intended post-change system. It may include user-visible behavior, API or CLI behavior, report output, data contracts, internal architecture, migration behavior, observability, or constraints that matter for implementation.
 
+## Choosing Gates
+
+Start by naming the slice outcome, not the test you expect to write.
+
+Use the minimum number of gates needed to cover independent blocking outcomes.
+
+Merge candidate gates when:
+- they prove the same slice outcome
+- they would normally pass or fail together
+- one is only a different proof dimension of the other, such as protocol ordering, architectural boundary, or edge-case preservation within the same behavior
+
+Split candidate gates when:
+- they describe different actors or externally distinct outcomes
+- one can fail while the other still passes
+- the implementation could reasonably be complete for one outcome while unfinished for the other
+
+For refactors or architecture slices, start with one gate named after the preserved or changed behavior, then add structural criteria inside that gate. Do not turn adapter boundaries, protocol ordering, or regression checks into separate gates unless they are independent outcomes.
+
+## Good Proofs
+
+A good proof is concrete enough that a planning agent can turn it into exact commands without inventing the test shape.
+
+Each proof should answer:
+- `Setup`: what environment, fixtures, fakes, or live systems are involved?
+- `Action`: what exact interaction, command, or sequence is performed?
+- `Assertions`: what exact output, ordering, state, or file contents are checked?
+- `Evidence`: what must be reported back?
+
+These are not sufficient by themselves:
+- "backend acceptance test"
+- "browser validation"
+- "static inspection"
+
+Those are categories, not proofs.
+
 ## Good Criteria
 
 Good criteria are:
@@ -157,24 +192,24 @@ CLI command against a fixture.
 Command output, exit status, and generated summary file contents.
 ```
 
-### Refactor
+### Refactor / Architecture
 
 ```markdown
-### Gate 1: Provider Logic Is Isolated
+### Acceptance Gate: CSV Import Preserves Operator Workflow Through The Shared Parser Boundary
 
 **Why this gate matters:**
-The refactor is complete only if provider-specific behavior no longer leaks into orchestration.
+The refactor is complete only if the existing import workflow behaves the same for operators while the parsing logic moves behind a reusable boundary.
 
 **Criteria:**
-- The orchestration module calls providers through `TranscriptionProvider`.
-- Provider-specific branching is contained in provider implementations.
-- Existing transcription behavior is preserved.
+- When an operator runs the existing CSV import entrypoint with a valid file, the command reports the same imported-row summary and produces the same persisted records as before the refactor.
+- When the CSV contains a malformed row, the command preserves the existing failure-reporting contract while continuing or stopping according to the current system rules.
+- The import entrypoint depends on a shared parser interface, and the shared parsing core does not import CLI or persistence modules.
 
-**Proof approach:**
-Static inspection plus existing transcription regression tests.
-
-**Expected evidence:**
-Code references showing the boundary and passing regression command output.
+**Proof:**
+- Setup: invoke the existing import entrypoint against fixed success and partial-failure fixtures, with a fake persistence adapter that records parsed rows.
+- Action: run the import flow for both fixtures.
+- Assertions: verify exit status, summary output, recorded rows, and code references showing that the entrypoint exercises the shared parser interface rather than concrete parsing or storage code.
+- Evidence: named test cases or commands, asserted summary values, and code references for the boundary.
 ```
 
 ### Migration

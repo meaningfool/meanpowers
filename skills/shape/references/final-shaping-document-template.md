@@ -28,12 +28,11 @@
 | R0 |  | Core goal |  |
 | R1 |  | Undecided |  |
 
-## Journeys (J)
+## Context Log
 
-| ID | Journey / Step | Actor | Description |
-|---|---|---|---|
-| J1 |  |  |  |
-| J1.1 |  |  |  |
+| ID | Point | Type | Object | Importance | Status | Notes |
+|---|---|---|---|---|---|---|
+| CL1 |  | expectation \| uncertainty \| preference \| constraint \| risk \| other | meta \| shape | high \| low | active |  |
 
 ## Shapes (S)
 
@@ -50,17 +49,6 @@
 |---|---|:---:|---|
 | A1 |  |  |  |
 | A2 |  | WARNING |  |
-
-## Fit Check
-
-| Req | Requirement | Status | A | B |
-|---|---|---|---|---|
-| R0 |  | Core goal | PASS | PASS |
-| R1 |  | Must-have | PASS | FAIL |
-
-**Notes:**
-
-- B fails R1:
 
 ## Selected Shape
 
@@ -80,6 +68,14 @@
 
 - 
 
+## Derived Actor Journeys
+
+[Describe actor journeys inferred from the selected shape where relevant. If actor journeys do not apply cleanly, state why.]
+
+| Journey / Step | Actor | Description |
+|---|---|---|
+|  |  |  |
+
 ## Final Slices
 
 ### Selected Slicing Logic
@@ -94,7 +90,7 @@
 
 **Demo scenario:**
 
-[Describe if applicable. If not applicable, describe how success and completenss is verified]
+[Describe if applicable. If not applicable, describe how success and completeness is verified]
 
 **Notes for `meanpowers:write-spec`:**
 

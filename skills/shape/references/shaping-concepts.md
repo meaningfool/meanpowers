@@ -4,6 +4,18 @@
 
 A software product is a system that actors interact with. A system has internal components and exposed interfaces. System behavior is the set of observable reactions to inputs and state.
 
+## Artifact Model
+
+Shaping has two core facets:
+
+- `Requirements` (R): what must be true about the finished system.
+- `Shapes` (S): possible concrete system forms and their components.
+
+Shaping also uses supporting artifacts:
+
+- `Context Log`: preferences, tradeoffs, uncertainties, risks, meta-process notes, decision criteria, and other important considerations that are not part of R or S.
+- `Derived Actor Journeys`: actor interactions inferred from a specific shape. Use them to check whether a shape creates coherent user-facing behavior. They are not first-class shaping facets and may not apply cleanly in every context.
+
 ## Requirements (R)
 
 **Instructions:**
@@ -41,7 +53,7 @@ Valid negative requirement when the prohibition is the behavior:
 R5: Audio recordings are not retained after session end | Must-have
 ```
 
-**How to diplay R:**
+**How to display R:**
 
 Use the following format:
 
@@ -65,7 +77,7 @@ Examples:
 - `A2-A`, `A2-B`: alternative approaches to component A2
 
 
-Diplay S using the following format:
+Display S using the following format:
 
 ```markdown
 | ID | Shape | Summary | Status |
@@ -88,9 +100,9 @@ Use `WARNING` in component flags when the what is known but the how is still unc
 
 ## Is a required solution part of R or S
 
-If the user states: "We will use Cleck authentication" is it:
+If the user states: "We will use Clerk authentication" is it:
 - An actual requirement?
-- A research direction with regards to the possible shapes?
+- A research direction regarding the possible shapes?
 
 Both are possible, and deciding requires clarifying with the user. Do they want:
 
@@ -109,27 +121,43 @@ R17: Only authenticated users can access full articles
 
 The `Context Log` serves as a place to collect important points made by the user that are not R nor S.
 
+Use the Context Log for:
+
+- Preferences that help choose between shapes.
+- Tradeoffs and decision criteria.
+- Uncertainties, risks, and assumptions.
+- Meta-process notes about how shaping should proceed.
+- Important points of view that should be preserved without becoming requirements.
+
+Do not put finished-system behavior into the Context Log when it can be stated as a requirement. Do not put concrete system forms into the Context Log when they belong in S.
+
+Context Log entries can be resolved or superseded as shaping progresses, but keep them visible when they explain why a shape was selected or rejected.
+
+Display the Context Log using the following format:
+
 ```markdown
 
 ## Context Log
 
-| Point | `type` | `object` | `importance` |
-|---|---|---|---|
-| [Short factual statement] | expectation \| uncertainty \| preference \| constraint \| risk \| other | meta \| shape | high \| low |
+| ID | Point | Type | Object | Importance | Status | Notes |
+|---|---|---|---|---|---|---|
+| CL1 | [Short factual statement] | expectation \| uncertainty \| preference \| constraint \| risk \| other | meta \| shape | high \| low | active \| resolved \| superseded \| discarded |  |
 
 ```
 
-## Journeys (J)
+## Derived Actor Journeys
 
-Journeys describe actor interactions with the system. They are inferred base on the shape. 
-- Use IDs such as `J1`, `J1.1`, and `J2`.
+Derived actor journeys describe actor interactions with the system. They are inferred from a specific shape and used as a coherence check.
+
+- Use them when the shaped change affects actor behavior, workflows, or observable interactions.
+- Do not force them when the shape is internal, infrastructural, or otherwise not naturally journey-shaped.
 - Good journey titles lead with a verb, identify the actor, and avoid jargon.
 
-Diplay J using the following format:
+Display derived actor journeys using the following format:
 
 ```markdown
-| ID | Journey / Step | Actor | Description |
-|---|---|---|---|
-| J1 | Create a report | back-office user | User creates a report from selected data. |
-| J1.1 | Choose report inputs | back-office user | User selects the data range and filters. |
+| Journey / Step | Actor | Description |
+|---|---|---|
+| Create a report | back-office user | User creates a report from selected data. |
+| Choose report inputs | back-office user | User selects the data range and filters. |
 ```
